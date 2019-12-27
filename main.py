@@ -45,6 +45,10 @@ def on_connect(mqttc, obj, flags, rc):
 def on_message(mqttc, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
+def on_command(mqttc, obj, msg):
+    print('Command topics')
+    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+
 
 def on_publish(mqttc, obj, mid):
     print("mid: " + str(mid))
@@ -95,7 +99,10 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
 mqttc.connect("18.185.47.167", 1883, 60)
-mqttc.subscribe("rpi/actions/reboot", 0)
+mqttc.subscribe("rpi/actions", qos=1)
+
+mqttc.message_callback_add("rpi/actions", on_command)
+
 
 mqttc.loop_start()
 
@@ -104,7 +111,6 @@ seq = 1
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 while True:
-    # payload = struct.pack(FORMAT, pid, seq, os.urandom(8))
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     blob = get_rpi_monitoring_data()

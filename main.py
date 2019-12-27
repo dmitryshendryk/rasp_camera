@@ -95,7 +95,7 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
 mqttc.connect("18.185.47.167", 1883, 60)
-#mqttc.subscribe("rpi/status", 0)
+mqttc.subscribe("rpi/actions/reboot", 0)
 
 mqttc.loop_start()
 

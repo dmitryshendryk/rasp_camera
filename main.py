@@ -8,6 +8,8 @@ os.environ['GPIOZERO_PIN_FACTORY'] = os.environ.get('GPIOZERO_PIN_FACTORY', 'moc
 import time
 import socket
 import json
+import socket
+import time
 from gpiozero import CPUTemperature
 
 
@@ -19,6 +21,21 @@ from datetime import datetime
 
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))
+
+
+def internet(host="8.8.8.8", port=53, timeout=3):
+  """
+  Host: 8.8.8.8 (google-public-dns-a.google.com)
+  OpenPort: 53/tcp
+  Service: domain (DNS/TCP)
+  """
+  try:
+    socket.setdefaulttimeout(timeout)
+    socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+    return True
+  except socket.error as ex:
+    print(ex)
+    return False
 
 
 def on_connect(mqttc, obj, flags, rc):
@@ -63,6 +80,11 @@ def get_rpi_monitoring_data():
     return monitor
 
 
+while not internet():
+    print('Waiting for internet connection')
+    time.sleep(10)
+
+print('Connected to internet!')
 
 
 mqttc = mqtt.Client()

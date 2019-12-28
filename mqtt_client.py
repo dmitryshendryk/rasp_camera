@@ -4,6 +4,7 @@ import subprocess
 import os 
 
 
+
 class MQTTClient():
 
     def __init__(self):
@@ -41,6 +42,10 @@ class MQTTClient():
 
     def on_log(self, mqttc, obj, level, string):
         print(string)
+
+    def publish_message(self, topic, blob):
+        result, mid = self.mqttc.publish(topic, blob, qos=0, retain=True)
+        return result, mid
 
 
     def reboot_rpi(self, mqttc, obj, msg):

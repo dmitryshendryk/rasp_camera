@@ -42,7 +42,7 @@ def reboot_rpi(mqttc, obj, msg):
     msg.payload = int(msg.payload)
     if Config.RPI_UNIQUE_ID == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
-        bashCommand = 'sudo reboot'
+        bashCommand = 'echo node_2 | sudo -S reboot'
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
         print(output, error)

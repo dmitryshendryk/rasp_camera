@@ -65,3 +65,6 @@ class MQTTClient():
             print('Shutdown RPI {0}'.format(msg.payload))
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
+
+    def start_video_recording(self, mqttc, obj, msg):
+        pass 

@@ -9,7 +9,7 @@ class RPI:
         pass
 
 
-    def get_rpi_monitoring_data():
+    def get_rpi_monitoring_data(self):
 
         cpu_usage = psutil.cpu_percent()
 

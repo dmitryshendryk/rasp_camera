@@ -16,8 +16,10 @@ class MQTTClient():
         self.mqttc.on_subscribe = self.on_subscribe
         self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
     
 
     def on_connect(self, mqttc, obj, flags, rc):
@@ -54,4 +56,12 @@ class MQTTClient():
         if rpi_id == msg.payload:
             print('Reboot RPI {0}'.format(msg.payload))
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
+            subprocess.call(bashCommand, shell=True)
+    
+    def shutdown_rpi(self, mqttc, obj, msg):
+        msg.payload = int(msg.payload)
+        rpi_id = int(os.environ['RPI_ID'])
+        if rpi_id == msg.payload:
+            print('Shutdown RPI {0}'.format(msg.payload))
+            bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)

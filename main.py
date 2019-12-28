@@ -39,7 +39,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
     return False
 
 def reboot_rpi(mqttc, obj, msg):
-    msg.payload = str(msg.payload)
+    msg.payload = int(msg.payload)
     if Config.RPI_UNIQUE_ID == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
         bashCommand = 'sudo reboot'

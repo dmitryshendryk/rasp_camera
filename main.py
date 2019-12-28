@@ -7,6 +7,7 @@ os.environ['GPIOZERO_PIN_FACTORY'] = os.environ.get('GPIOZERO_PIN_FACTORY', 'moc
 
 import time
 import socket
+import subprocess
 import json
 import socket
 import time
@@ -16,7 +17,7 @@ from gpiozero import CPUTemperature
 
 import paho.mqtt.client as mqtt
 from datetime import datetime
-
+from . config import Config
 
 
 pid = os.getpid()
@@ -37,6 +38,16 @@ def internet(host="8.8.8.8", port=53, timeout=3):
     print(ex)
     return False
 
+def reboot_rpi(mqttc, obj, msg):
+    if Config.RPI_UNIQUE_ID == msg.payload:
+        print('Reboot RPI {0}'.format(msg.payload))
+        # bashCommand = 'sudo reboot'
+        # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        # output, error = process.communicate()
+        # print(output, error)
+
+
+
 
 def on_connect(mqttc, obj, flags, rc):
     print("rc: " + str(rc))
@@ -48,6 +59,7 @@ def on_message(mqttc, obj, msg):
 def on_command(mqttc, obj, msg):
     print('Command topics')
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+
 
 
 def on_publish(mqttc, obj, mid):
@@ -98,10 +110,10 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
-mqttc.connect("18.185.47.167", 1883, 60)
+mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
 mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
 
-mqttc.message_callback_add("store/prishna/rpi/actions/reboot", on_command)
+mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
 
 
 mqttc.loop_start()

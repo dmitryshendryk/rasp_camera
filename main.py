@@ -17,7 +17,7 @@ from gpiozero import CPUTemperature
 
 import paho.mqtt.client as mqtt
 from datetime import datetime
-from . config import Config
+from config import Config
 
 
 pid = os.getpid()

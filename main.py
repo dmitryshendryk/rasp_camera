@@ -122,9 +122,9 @@ if __name__ == "__main__":
 
     # mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
 
-    mqttc = MQTTClient()
+    client = MQTTClient()
    
-    mqttc.loop_start()
+    client.mqttc.loop_start()
 
 
     seq = 1

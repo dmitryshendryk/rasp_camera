@@ -3,15 +3,12 @@ os.environ['GPIOZERO_PIN_FACTORY'] = os.environ.get('GPIOZERO_PIN_FACTORY', 'moc
 
 import time
 import socket
-import subprocess
 import json
-import socket
-import time
-from gpiozero import CPUTemperature
-
-
-
 from datetime import datetime
+
+
+
+from utils import *
 from config import Config
 from mqtt_client import MQTTClient
 from rpi import RPI
@@ -20,16 +17,6 @@ from rpi import RPI
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))
 
-
-def internet(host="8.8.8.8", port=53, timeout=3):
-  
-  try:
-    socket.setdefaulttimeout(timeout)
-    socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-    return True
-  except socket.error as ex:
-    print(ex)
-    return False
 
 
 if __name__ == "__main__":

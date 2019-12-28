@@ -44,9 +44,10 @@ def reboot_rpi(mqttc, obj, msg):
     if rpi_id == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
         bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
+        print(bashCommand)
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
-        print(output, error)
+        # print(output, error)
 
 
 

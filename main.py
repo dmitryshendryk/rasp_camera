@@ -99,9 +99,9 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
 mqttc.connect("18.185.47.167", 1883, 60)
-mqttc.subscribe("rpi/actions", qos=1)
+mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
 
-mqttc.message_callback_add("rpi/actions", on_command)
+mqttc.message_callback_add("store/prishna/rpi/actions/reboot", on_command)
 
 
 mqttc.loop_start()

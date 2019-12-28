@@ -40,7 +40,8 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 def reboot_rpi(mqttc, obj, msg):
     msg.payload = int(msg.payload)
-    if Config.RPI_UNIQUE_ID == msg.payload:
+    rpi_id = os.environ['RPI_ID']
+    if rpi_id == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
         bashCommand = 'echo node_2 | sudo -S reboot'
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -97,41 +98,46 @@ def get_rpi_monitoring_data():
     return monitor
 
 
-while not internet():
-    print('Waiting for internet connection')
-    time.sleep(10)
 
-print('Connected to internet!')
+if __name__ == "__main__":
+        
 
 
-mqttc = mqtt.Client()
-mqttc.username_pw_set("munich_broker", "8Delusion-Serif")
-mqttc.on_message = on_message
-mqttc.on_connect = on_connect
-mqttc.on_publish = on_publish
-mqttc.on_subscribe = on_subscribe
+    while not internet():
+        print('Waiting for internet connection')
+        time.sleep(10)
 
-mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
-mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+    print('Connected to internet!')
 
-mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
+    rpi_id = os.environ['RPI_ID']
+
+    mqttc = mqtt.Client()
+    mqttc.username_pw_set("munich_broker", "8Delusion-Serif")
+    mqttc.on_message = on_message
+    mqttc.on_connect = on_connect
+    mqttc.on_publish = on_publish
+    mqttc.on_subscribe = on_subscribe
+
+    mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
+    mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+
+    mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
 
 
-mqttc.loop_start()
+    mqttc.loop_start()
 
 
-seq = 1
-hostname = socket.gethostname()
-IPAddr = socket.gethostbyname(hostname)
-while True:
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    blob = get_rpi_monitoring_data()
-    blob['connectionStatus'] = True
-    blob['id'] = 2
-    blob = json.dumps(blob)
-    result, mid = mqttc.publish('store/prishna/rpi/1', blob, qos=0, retain=True)
-    print('event published: result={}, mid={}'.format(result, mid))
+    seq = 1
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    while True:
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        blob = get_rpi_monitoring_data()
+        blob['connectionStatus'] = True
+        blob = json.dumps(blob)
+        result, mid = mqttc.publish('store/prishna/rpi/' + str(rpi_id), blob, qos=0, retain=True)
+        print('event published: result={}, mid={}'.format(result, mid))
 
-    seq += 1
-    time.sleep(1)
+        seq += 1
+        time.sleep(1)

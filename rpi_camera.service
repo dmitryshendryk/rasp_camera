@@ -1,0 +1,13 @@
+[Unit]
+Description=RPI Camera
+
+[Service]
+Environment="RPI_ID=2"
+Environment="RPI_PASS=node_2"
+WorkingDirectory=/path/to/folder
+Type=simple
+ExecStart=/home/rasp2/.conda/envs/camera/bin/python main.py
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -18,6 +18,7 @@ from gpiozero import CPUTemperature
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from config import Config
+from mqtt_client import MQTTClient
 
 
 pid = os.getpid()
@@ -44,39 +45,34 @@ def reboot_rpi(mqttc, obj, msg):
     if rpi_id == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
         bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
-        # bashCommand = 'echo node_2 | sudo -S reboot'
-        # print(bashCommand)
-        # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        # output, error = process.communicate()
-        # print(output, error)
         subprocess.call(bashCommand, shell=True)
 
 
 
 
-def on_connect(mqttc, obj, flags, rc):
-    print("rc: " + str(rc))
+# def on_connect(mqttc, obj, flags, rc):
+#     print("rc: " + str(rc))
 
 
-def on_message(mqttc, obj, msg):
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+# def on_message(mqttc, obj, msg):
+#     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
-def on_command(mqttc, obj, msg):
-    print('Command topics')
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
-
-
-
-def on_publish(mqttc, obj, mid):
-    print("mid: " + str(mid))
+# def on_command(mqttc, obj, msg):
+#     print('Command topics')
+#     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
 
-def on_subscribe(mqttc, obj, mid, granted_qos):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+
+# def on_publish(mqttc, obj, mid):
+#     print("mid: " + str(mid))
 
 
-def on_log(mqttc, obj, level, string):
-    print(string)
+# def on_subscribe(mqttc, obj, mid, granted_qos):
+#     print("Subscribed: " + str(mid) + " " + str(granted_qos))
+
+
+# def on_log(mqttc, obj, level, string):
+#     print(string)
 
 def get_rpi_monitoring_data():
 
@@ -114,19 +110,20 @@ if __name__ == "__main__":
 
     rpi_id = os.environ['RPI_ID']
 
-    mqttc = mqtt.Client()
-    mqttc.username_pw_set("munich_broker", "8Delusion-Serif")
-    mqttc.on_message = on_message
-    mqttc.on_connect = on_connect
-    mqttc.on_publish = on_publish
-    mqttc.on_subscribe = on_subscribe
+    # mqttc = mqtt.Client()
+    # mqttc.username_pw_set("munich_broker", "8Delusion-Serif")
+    # mqttc.on_message = on_message
+    # mqttc.on_connect = on_connect
+    # mqttc.on_publish = on_publish
+    # mqttc.on_subscribe = on_subscribe
 
-    mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
-    mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+    # mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
+    # mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
 
-    mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
+    # mqttc.message_callback_add("store/prishna/rpi/actions/reboot", reboot_rpi)
 
-
+    mqttc = MQTTClient()
+   
     mqttc.loop_start()
 
 

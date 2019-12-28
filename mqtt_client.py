@@ -15,7 +15,7 @@ class MQTTClient():
         self.mqttc.on_publish = self.on_publish
         self.mqttc.on_subscribe = self.on_subscribe
         self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
-        # self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
     

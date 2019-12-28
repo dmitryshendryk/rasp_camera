@@ -40,7 +40,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 def reboot_rpi(mqttc, obj, msg):
     msg.payload = int(msg.payload)
-    rpi_id = os.environ['RPI_ID']
+    rpi_id = int(os.environ['RPI_ID'])
     if rpi_id == msg.payload:
         print('Reboot RPI {0}'.format(msg.payload))
         bashCommand = 'echo node_2 | sudo -S reboot'
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         blob = get_rpi_monitoring_data()
         blob['connectionStatus'] = True
         blob = json.dumps(blob)
-        result, mid = mqttc.publish('store/prishna/rpi/' + str(rpi_id), blob, qos=0, retain=True)
+        result, mid = mqttc.publish('store/prishna/rpi/' + rpi_id, blob, qos=0, retain=True)
         print('event published: result={}, mid={}'.format(result, mid))
 
         seq += 1

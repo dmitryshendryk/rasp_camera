@@ -1,3 +1,4 @@
+import  threading
 from threading import Thread
 import cv2
 from datetime import datetime
@@ -12,8 +13,9 @@ class VideoGet:
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
-        
-        self.t = Thread(target=self.get, args=())
+        self.stop_event= threading.Event()
+
+        self.t = Thread(target=self.get, args=(self.stop_event))
 
 
     def start(self):
@@ -22,7 +24,7 @@ class VideoGet:
         fourcc = cv2.VideoWriter_fourcc(*"H264")
         file_name = str(now_date) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
-        self.t.daemon = True
+        self.t.setDaemon(True)
         self.t.start()
         return self
 
@@ -39,6 +41,7 @@ class VideoGet:
 
     def stop(self):
         self.stream.release()
+        self.stop_event.set()
         self.stopped = True
 
     def __del__(self):

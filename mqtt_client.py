@@ -4,6 +4,8 @@ import subprocess
 import os 
 
 
+from camera import VideoGet
+
 
 class MQTTClient():
 
@@ -15,11 +17,16 @@ class MQTTClient():
         self.mqttc.on_publish = self.on_publish
         self.mqttc.on_subscribe = self.on_subscribe
         self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
+        self.camera = VideoGet()
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/start_video", self.start_video_recording)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
     
 
     def on_connect(self, mqttc, obj, flags, rc):
@@ -67,4 +74,15 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
 
     def start_video_recording(self, mqttc, obj, msg):
-        pass 
+        msg.payload = int(msg.payload)
+        rpi_id = int(os.environ['RPI_ID'])
+        if rpi_id == msg.payload:
+            print('Start video recording')
+            self.camera.start()
+
+    def stop_video_recording(self, mqttc, obj, msg):
+        msg.payload = int(msg.payload)
+        rpi_id = int(os.environ['RPI_ID'])
+        if rpi_id == msg.payload:
+            print('Stop video recording')
+            self.camera.stop()

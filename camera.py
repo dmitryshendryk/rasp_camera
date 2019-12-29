@@ -40,7 +40,7 @@ class VideoGet:
                         break
 
     def stop(self):
-        self.stream.release()
+        # self.stream.release()
         self.stopped.set()
         # self.stopped = True
 

@@ -12,7 +12,7 @@ class VideoGet:
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
-        self.t = None
+        self.t = Thread(target=self.get, args=())
 
 
     def start(self):
@@ -21,7 +21,7 @@ class VideoGet:
         fourcc = cv2.VideoWriter_fourcc(*"H264")
         file_name = str(now_date) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
-        self.t = Thread(target=self.get, args=()).start()
+        self.t.start()
         return self
 
     def get(self):

@@ -18,7 +18,6 @@ class VideoGet:
 
 
     def start(self):
-        print('Start thread')
         if self.stopped.is_set():
             self.stopped.clear()
         now = datetime.now()
@@ -26,32 +25,26 @@ class VideoGet:
         fourcc = cv2.VideoWriter_fourcc(*"H264")
         file_name = str(now_date) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
-        print('Start T')
         t = Thread(target=self.get, args=(self.stopped, ))
         t.setDaemon(True)
         t.start()
-        print('Started T')
         return self
 
     def get(self, stopped):
-        print('Inside get')
         while not stopped.is_set():
             if not self.grabbed:
                 self.stop()
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    print('Writting frames')
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
 
     def stop(self):
-        print('Stoping thread')
         # self.stream.release()
         self.stopped.set()
         # self.stopped = True
-        print('Finished thread')
     def __del__(self):
         self.stream.release()
         cv2.destroyAllWindows()

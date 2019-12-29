@@ -18,6 +18,8 @@ class VideoGet:
 
 
     def start(self):
+        if not self.stream:
+            self.stream = cv2.VideoCapture(0)
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S")
         fourcc = cv2.VideoWriter_fourcc(*"H264")

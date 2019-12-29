@@ -12,12 +12,12 @@ class VideoGet:
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
-        self.fourcc = cv2.VideoWriter_fourcc(*"H264")
         
 
     def start(self):
         now = datetime.now()
         now_date = now.strftime("%d/%m/%Y_%H:%M:%S")
+        fourcc = cv2.VideoWriter_fourcc(*"H264")
         self.out = cv2.VideoWriter( now_date + '.avi', fourcc, 20.0, (640,480))
         Thread(target=self.get, args=()).start()
         return self

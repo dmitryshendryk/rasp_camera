@@ -12,13 +12,14 @@ class VideoGet:
         self.stream = cv2.VideoCapture(src)
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
-        
+
 
     def start(self):
         now = datetime.now()
-        now_date = now.strftime("%d/%m/%Y_%H:%M:%S")
+        now_date = now.strftime("%d_%m_%Y__%H_%M_%S")
         fourcc = cv2.VideoWriter_fourcc(*"H264")
-        self.out = cv2.VideoWriter( now_date + '.avi', fourcc, 20.0, (640,480))
+        file_name = str(now_date) + '.avi'
+        self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
         Thread(target=self.get, args=()).start()
         return self
 
@@ -30,7 +31,13 @@ class VideoGet:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
                     self.out.write(self.frame)
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
 
     def stop(self):
         self.stopped = True
 
+    def __del__(self):
+        self.stream.release()
+        cv2.destroyAllWindows()
+        print("Camera disabled and all output windows closed...")

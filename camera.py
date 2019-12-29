@@ -36,7 +36,7 @@ class VideoGet:
                         break
 
     def stop(self):
-        self.t.join()
+        self.t.set()
         self.stopped = True
 
     def __del__(self):

@@ -37,7 +37,6 @@ class VideoGet:
 
     def stop(self):
         self.stream.release()
-        self.t.terminate()
         self.stopped = True
 
     def __del__(self):

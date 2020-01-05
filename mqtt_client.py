@@ -100,9 +100,10 @@ class MQTTClient():
         rpi_id = int(os.environ['RPI_ID'])
         if rpi_id == msg.payload:
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            remote_path = '/home/ubuntu/videos/' + local_path
             print("Upload videos to server")
-            self.ssh_paramiko.mkdir(ROOT_DIR + '/' + local_path)
-            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, local_path)
+            self.ssh_paramiko.mkdir(remote_path)
+            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, remote_path)
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

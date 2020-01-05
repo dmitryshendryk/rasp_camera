@@ -94,10 +94,10 @@ class SftpClient:
         '''
         for item in os.listdir(source):
             if os.path.isfile(os.path.join(source, item)):
-                self.put(os.path.join(source, item), '%s/%s' % (target, item))
+                self._connection.put(os.path.join(source, item), '%s/%s' % (target, item))
             else:
-                self.mkdir('%s/%s' % (target, item), ignore_existing=True)
-                self.put_dir(os.path.join(source, item), '%s/%s' % (target, item))
+                self._connection.mkdir('%s/%s' % (target, item), ignore_existing=True)
+                self._connection.put_dir(os.path.join(source, item), '%s/%s' % (target, item))
 
 
 # ssh_client = SftpClient()

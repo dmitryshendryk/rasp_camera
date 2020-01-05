@@ -4,7 +4,7 @@ import paramiko
 import time
 import errno
 import logging
-import StringIO
+from io import StringIO
 logging.basicConfig(format='%(levelname)s : %(message)s',
                     level=logging.INFO)
 

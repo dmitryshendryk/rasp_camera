@@ -7,6 +7,7 @@ import shutil
 
 from camera import VideoGet
 
+ROOT_DIR = os.path.abspath('./')
 
 class MQTTClient():
 
@@ -100,8 +101,8 @@ class MQTTClient():
         if rpi_id == msg.payload:
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             print("Upload videos to server")
-            self.ssh_paramiko.mkdir(local_path + '/')
-            self.ssh_paramiko.put_dir(local_path, local_path)
+            self.ssh_paramiko.mkdir(ROOT_DIR + '/' + local_path)
+            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, local_path)
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

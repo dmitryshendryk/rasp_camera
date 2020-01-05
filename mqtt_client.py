@@ -26,12 +26,14 @@ class MQTTClient():
         self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/start_video", self.start_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/clear_videos", self.clear_videos)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/upload_videos", self.upload_video_to_server)
     
 
     def on_connect(self, mqttc, obj, flags, rc):
@@ -97,7 +99,9 @@ class MQTTClient():
         rpi_id = int(os.environ['RPI_ID'])
         if rpi_id == msg.payload:
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
-            # self.ssh_paramiko.upload(local_path)
+            print("Upload videos to server")
+            self.ssh_paramiko.mkdir(local_path + '/')
+            self.ssh_paramiko.put_dir(local_path, local_path)
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

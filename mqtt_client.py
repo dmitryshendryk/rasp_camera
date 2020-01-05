@@ -103,6 +103,7 @@ class MQTTClient():
         msg.payload = int(msg.payload)
         rpi_id = int(os.environ['RPI_ID'])
         if rpi_id == msg.payload:
+            print('CLear videos')
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             shutil.rmtree(local_path + '/')
 

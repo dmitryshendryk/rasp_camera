@@ -2,6 +2,7 @@
 import time
 import socket
 import json
+import paramiko 
 
 
 def internet(host="8.8.8.8", port=53, timeout=3):

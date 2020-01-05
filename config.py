@@ -4,4 +4,6 @@ class Config:
     MQTT_KEEP_ALIVE = 60
     MQTT_PASS = '8Delusion-Serif'
     MQTT_USER = 'munich_broker'
-    
+    SSH_KEY_PATH = './s3_id_rsa'
+    HOST_USERNAME = 'ubuntu'
+    SSH_PORT = 22

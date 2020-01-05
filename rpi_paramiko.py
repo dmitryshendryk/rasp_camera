@@ -80,7 +80,7 @@ class SftpClient:
             if ignore_existing:
                 pass
             else:
-                raise
+                raise IOError
     def chdir(self, path):
         try:
             self._connection.chdir(path)

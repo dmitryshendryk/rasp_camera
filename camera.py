@@ -30,7 +30,7 @@ class VideoGet:
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S")
         fourcc = cv2.VideoWriter_fourcc(*"H264")
-        video_save_path = './' + self.config._configuration_data.location + '/' + os.environ['RPI_ID']
+        video_save_path = './' + self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
         file_name = video_save_path + '/' + str(now_date) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))

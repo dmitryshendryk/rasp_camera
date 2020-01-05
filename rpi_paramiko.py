@@ -26,7 +26,7 @@ class SftpClient:
         if keyfilepath is not None:
             f = open(keyfilepath,'r')
             s = f.read()
-            keyfile = StringIO.StringIO(s)
+            keyfile = StringIO(s)
             # Get private key used to authenticate user.
             key = paramiko.RSAKey.from_private_key(keyfile)
 

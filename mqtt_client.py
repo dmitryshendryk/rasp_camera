@@ -111,12 +111,14 @@ class MQTTClient():
                 print('Create directory')
                 self.ssh_paramiko.mkdir(first_remote_level)
 
-            # second_remote_level = remote_path + '/' +  self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            second_remote_level = remote_path + '/' +  self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             
-            # try:
-            #     self.ssh_paramiko.chdir(second_remote_level)
-            # except IOError as e:
-            #     self.ssh_paramiko.mkdir(second_remote_level)
+            try:
+                self.ssh_paramiko.chdir(second_remote_level)
+            except IOError as e:
+                print('Directory {0} doesnt exist'.format(second_remote_level))
+                print('Create directory')
+                self.ssh_paramiko.mkdir(second_remote_level)
 
             # print("Upload videos to server")
             # self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)

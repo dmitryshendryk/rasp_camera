@@ -81,7 +81,12 @@ class SftpClient:
                 pass
             else:
                 raise
-    
+    def chdir(self, path):
+        try:
+            self._connection.chdir(path)
+        except IOError:
+            raise 
+
     def put_dir(self, source, target):
         ''' Uploads the contents of the source directory to the target path. The
             target directory needs to exists. All subdirectories in source are 

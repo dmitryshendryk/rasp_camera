@@ -86,3 +86,9 @@ class MQTTClient():
         if rpi_id == msg.payload:
             print('Stop video recording')
             self.camera.stop()
+    
+    def upload_video_to_server(self,mqttc, obj, msg):
+        msg.payload = int(msg.payload)
+        rpi_id = int(os.environ['RPI_ID'])
+        if rpi_id == msg.payload:
+            pass

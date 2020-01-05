@@ -1,4 +1,14 @@
+import json
+
 class Config:
+
+    def __init__(self):
+        try:
+            with open("cfg/configuration.json", "r") as configuration_file:
+                self._configuration_data = json.load(configuration_file)
+        except FileNotFoundError as error:
+            print(error)
+
     MQTT_HOST = '18.185.47.167'
     MQTT_PORT = 1883
     MQTT_KEEP_ALIVE = 60

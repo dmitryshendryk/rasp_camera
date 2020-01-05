@@ -4,6 +4,7 @@ import paramiko
 import time
 import errno
 import logging
+import StringIO
 logging.basicConfig(format='%(levelname)s : %(message)s',
                     level=logging.INFO)
 
@@ -23,8 +24,11 @@ class SftpClient:
     @classmethod
     def create_connection(cls, host, port, username, keyfilepath):
         if keyfilepath is not None:
+            f = open(keyfilepath,'r')
+            s = f.read()
+            keyfile = StringIO.StringIO(s)
             # Get private key used to authenticate user.
-            key = paramiko.RSAKey.from_private_key(keyfilepath)
+            key = paramiko.RSAKey.from_private_key(keyfile)
 
         transport = Transport(sock=(host, port))
         transport.connect(username=username, pkey=key)

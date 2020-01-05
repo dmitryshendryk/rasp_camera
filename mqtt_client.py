@@ -102,7 +102,7 @@ class MQTTClient():
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             remote_path = '/home/ubuntu/videos/' 
             
-            first_remote_level = remote_path + '/' +  self.config._configuration_data['location']
+            first_remote_level = remote_path + self.config._configuration_data['location']
             
             try:
                 self.ssh_paramiko.chdir(first_remote_level)

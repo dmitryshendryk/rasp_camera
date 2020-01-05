@@ -120,8 +120,8 @@ class MQTTClient():
                 print('Create directory')
                 self.ssh_paramiko.mkdir(second_remote_level)
 
-            # print("Upload videos to server")
-            # self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+            print("Upload videos to server")
+            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

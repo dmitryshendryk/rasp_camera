@@ -103,7 +103,7 @@ class MQTTClient():
             remote_path = '/home/ubuntu/videos/' 
             
             first_remote_level = remote_path + self.config._configuration_data['location']
-            self.ssh_paramiko.mkdir(remote_path)
+            self.ssh_paramiko.mkdir(first_remote_level)
             # try:
             #     self.ssh_paramiko.chdir(first_remote_level)
             # except IOError as e:

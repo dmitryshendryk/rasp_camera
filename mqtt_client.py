@@ -100,10 +100,26 @@ class MQTTClient():
         rpi_id = int(os.environ['RPI_ID'])
         if rpi_id == msg.payload:
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
-            remote_path = '/home/ubuntu/videos/' + local_path
+            remote_path = '/home/ubuntu/videos/' 
+            
+            first_remote_level = remote_path + '/' +  self.config._configuration_data['location']
+            
+            try:
+                self.ssh_paramiko.chdir(first_remote_level)
+            except IOError as e:
+                print('Directory {0} doesnt exist'.format(first_remote_level))
+                print('Create directory')
+                self.ssh_paramiko.mkdir(remote_path)
+
+            second_remote_level = remote_path + '/' +  self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            
+            try:
+                self.ssh_paramiko.chdir(second_remote_level)
+            except IOError as e:
+                self.ssh_paramiko.mkdir(second_remote_level)
+
             print("Upload videos to server")
-            self.ssh_paramiko.mkdir(remote_path)
-            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, remote_path)
+            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

@@ -103,12 +103,13 @@ class MQTTClient():
             remote_path = '/home/ubuntu/videos/' 
             
             first_remote_level = remote_path + self.config._configuration_data['location']
-            self.ssh_paramiko.mkdir(first_remote_level)
-            # try:
-            #     self.ssh_paramiko.chdir(first_remote_level)
-            # except IOError as e:
-            #     print('Directory {0} doesnt exist'.format(first_remote_level))
-            #     print('Create directory')
+            
+            try:
+                self.ssh_paramiko.chdir(first_remote_level)
+            except IOError as e:
+                print('Directory {0} doesnt exist'.format(first_remote_level))
+                print('Create directory')
+                self.ssh_paramiko.mkdir(first_remote_level)
 
             # second_remote_level = remote_path + '/' +  self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             

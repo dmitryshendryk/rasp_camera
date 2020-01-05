@@ -5,6 +5,7 @@ import time
 import errno
 import logging
 from io import StringIO
+import os 
 logging.basicConfig(format='%(levelname)s : %(message)s',
                     level=logging.INFO)
 
@@ -70,7 +71,28 @@ class SftpClient:
             self.download(remote_path, local_path, retry=retry)
     def close(self):
         self._connection.close()
+    
+    def mkdir(self, path, mode=511, ignore_existing=False):
+        ''' Augments mkdir by adding an option to not fail if the folder exists  '''
+        try:
+            self._connection.mkdir(path, mode)
+        except IOError:
+            if ignore_existing:
+                pass
+            else:
+                raise
+    
+    def put_dir(self, source, target):
+        ''' Uploads the contents of the source directory to the target path. The
+            target directory needs to exists. All subdirectories in source are 
+            created under target.
+        '''
+        for item in os.listdir(source):
+            if os.path.isfile(os.path.join(source, item)):
+                self.put(os.path.join(source, item), '%s/%s' % (target, item))
+            else:
+                self.mkdir('%s/%s' % (target, item), ignore_existing=True)
+                self.put_dir(os.path.join(source, item), '%s/%s' % (target, item))
 
 
-
-ssh_client = SftpClient()
+# ssh_client = SftpClient()

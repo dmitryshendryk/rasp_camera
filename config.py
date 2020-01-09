@@ -16,4 +16,4 @@ class Config:
     MQTT_USER = 'munich_broker'
     SSH_KEY_PATH = './s3_id_rsa'
     HOST_USERNAME = 'ubuntu'
-    SSH_PORT = 22
+    SSH_PORT = 2222

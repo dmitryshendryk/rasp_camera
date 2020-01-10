@@ -1,12 +1,15 @@
 [Unit]
 Description=RPI Camera
+After=NetworkManager.service
 
 [Service]
-Environment="RPI_ID=2"
-Environment="RPI_PASS=node_2"
-WorkingDirectory=/path/to/folder
+Environment="RPI_ID=3"
+Environment="RPI_PASS=node_3"
+WorkingDirectory=/home/rasp3/Documents/rasp_camera
 Type=simple
-ExecStart=/home/rasp2/.conda/envs/camera/bin/python main.py
+User=rasp3
+Group=rasp3
+ExecStart=python3 main.py
 KillMode=process
 
 [Install]

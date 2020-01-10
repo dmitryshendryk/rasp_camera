@@ -5,6 +5,7 @@ from datetime import datetime
 import pathlib
 from config import Config
 import os
+from error import CameraNotConnected
 
 
 class VideoGet:
@@ -15,6 +16,9 @@ class VideoGet:
 
     def __init__(self, src=0):
         self.stream = cv2.VideoCapture(src)
+        if self.stream is None or not self.stream.isOpened():
+            raise CameraNotConnected()
+
         (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()

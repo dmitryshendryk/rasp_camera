@@ -6,6 +6,7 @@ from rpi_paramiko import SftpClient
 import shutil
 
 from camera import VideoGet
+from error import CameraNotConnected
 
 ROOT_DIR = os.path.abspath('./')
 
@@ -21,7 +22,12 @@ class MQTTClient():
         self.mqttc.on_publish = self.on_publish
         self.mqttc.on_subscribe = self.on_subscribe
         self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
-        self.camera = VideoGet()
+        self.camera = None
+        try:
+            self.camera = VideoGet()
+        except CameraNotConnected as e:
+            print('Camera not connected')
+            
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
@@ -82,19 +88,24 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
 
     def start_video_recording(self, mqttc, obj, msg):
-        msg.payload = int(msg.payload)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg.payload:
-            print('Start video recording')
-            self.camera.start()
+        if self.camera:
+            msg.payload = int(msg.payload)
+            rpi_id = int(os.environ['RPI_ID'])
+            if rpi_id == msg.payload:
+                print('Start video recording')
+                self.camera.start()
+        else:
+            print('Camera not connected')
 
     def stop_video_recording(self, mqttc, obj, msg):
-        msg.payload = int(msg.payload)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg.payload:
-            print('Stop video recording')
-            self.camera.stop()
-    
+        if self.camera:
+            msg.payload = int(msg.payload)
+            rpi_id = int(os.environ['RPI_ID'])
+            if rpi_id == msg.payload:
+                print('Stop video recording')
+                self.camera.stop()
+        else:
+            print('Camera not connected')
     def upload_video_to_server(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)
         rpi_id = int(os.environ['RPI_ID'])

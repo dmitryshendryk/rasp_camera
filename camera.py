@@ -62,7 +62,7 @@ class VideoGet:
     def stop(self, mqtt):
         # self.stream.release()
         self.stopped.set()
-        
+        blob = {}
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
 

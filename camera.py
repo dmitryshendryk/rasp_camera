@@ -61,12 +61,13 @@ class VideoGet:
 
     def stop(self, mqtt):
         # self.stream.release()
-        self.stopped.set()
         blob = {}
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
 
         mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), blob)
+        self.stopped.set()
+        
         # self.stopped = True
     def __del__(self):
         self.stream.release()

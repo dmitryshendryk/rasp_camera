@@ -44,6 +44,7 @@ class VideoGet:
         return self
 
     def get(self, stopped, mqtt):
+        blob = {}
         blob['connectionStatus'] = True
         blob = json.dumps(blob)
 

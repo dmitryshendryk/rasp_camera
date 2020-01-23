@@ -26,7 +26,6 @@ class VideoGet:
         # self.stopped = False
         self.stopped= threading.Event()
         self.config = Config()
-        self.blob = {}
 
     def start(self, mqtt):
         if self.stopped.is_set():
@@ -45,8 +44,9 @@ class VideoGet:
         return self
 
     def get(self, stopped, mqtt):
-        self.blob['connectionStatus'] = True
-        self.blob = json.dumps(self.blob)
+        blob = {}
+        blob['connectionStatus'] = True
+        blob = json.dumps(blob)
 
         while not stopped.is_set():
             if not self.grabbed:
@@ -54,7 +54,7 @@ class VideoGet:
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), self.blob)
+                    mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
@@ -63,10 +63,10 @@ class VideoGet:
         # self.stream.release()
         self.stopped.set()
         
-        self.blob['connectionStatus'] = False
-        self.blob = json.dumps(self.blob)
+        blob['connectionStatus'] = False
+        blob = json.dumps(blob)
 
-        mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), self.blob)
+        mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), blob)
         # self.stopped = True
     def __del__(self):
         self.stream.release()

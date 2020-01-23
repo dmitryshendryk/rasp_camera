@@ -59,7 +59,7 @@ class VideoGet:
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
 
-    def stop(self):
+    def stop(self, mqtt):
         # self.stream.release()
         self.stopped.set()
         

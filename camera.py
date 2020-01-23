@@ -6,7 +6,10 @@ import pathlib
 from config import Config
 import os
 from error import CameraNotConnected
+import json
 
+
+rpi_id = os.environ['RPI_ID']
 
 class VideoGet:
     """
@@ -24,7 +27,7 @@ class VideoGet:
         self.stopped= threading.Event()
         self.config = Config()
 
-    def start(self):
+    def start(self, mqtt):
         if self.stopped.is_set():
             self.stopped.clear()
         now = datetime.now()
@@ -35,18 +38,22 @@ class VideoGet:
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
         file_name = video_save_path + '/' + str(now_date) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
-        t = Thread(target=self.get, args=(self.stopped, ))
+        t = Thread(target=self.get, args=(self.stopped, mqtt))
         t.setDaemon(True)
         t.start()
         return self
 
-    def get(self, stopped):
+    def get(self, stopped, mqtt):
+        blob['connectionStatus'] = True
+        blob = json.dumps(blob)
+
         while not stopped.is_set():
             if not self.grabbed:
                 self.stop()
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
+                    mqttc.publish("/camera/recording/" + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

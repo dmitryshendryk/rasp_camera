@@ -93,7 +93,7 @@ class MQTTClient():
             rpi_id = int(os.environ['RPI_ID'])
             if rpi_id == msg.payload:
                 print('Start video recording')
-                self.camera.start()
+                self.camera.start(self)
         else:
             print('Camera not connected start_video_recording')
 

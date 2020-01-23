@@ -26,7 +26,7 @@ class MQTTClient():
         try:
             self.camera = VideoGet()
         except CameraNotConnected as e:
-            print('Camera not connected')
+            print('Camera not connected __init__')
             
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
@@ -95,7 +95,7 @@ class MQTTClient():
                 print('Start video recording')
                 self.camera.start()
         else:
-            print('Camera not connected')
+            print('Camera not connected start_video_recording')
 
     def stop_video_recording(self, mqttc, obj, msg):
         if self.camera:
@@ -105,7 +105,7 @@ class MQTTClient():
                 print('Stop video recording')
                 self.camera.stop()
         else:
-            print('Camera not connected')
+            print('Camera not connected stop_video_recording')
     def upload_video_to_server(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)
         rpi_id = int(os.environ['RPI_ID'])

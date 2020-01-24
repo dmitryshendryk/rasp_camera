@@ -50,7 +50,7 @@ class VideoGet:
 
         while not stopped.is_set():
             if not self.grabbed:
-                self.stop()
+                self.stop(mqtt)
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:

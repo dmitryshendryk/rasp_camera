@@ -43,13 +43,19 @@ python main.py train model_v1
 Predict on one image
 ```
 python main.py predict image --model_path=/path/to/model    --image_path=/path/to/image
-/GICSD_1_0_3.png
 ```
 
 ## Approach
 
-[TODO: Complete this section with a brief summary of the approach]
+I've used ResNet-18 for my detection. First I've made weighted dataset to fix the problem of 
+the unbalanced dataset. Than created augmentation of the dataset Rescal and RandomCrop. 
+There more augmentation can be provided like Gaussian Noise and RandomFlip. 
+After this I've grayscaled the image and trained the network. 
 
 ## Future Work
 
-[TODO: Complete this section with a set of ideas for future work]
+Can be used and ensemble of the networks, like I've tried with DensNet and ResNet. 
+In parallel they will do prediction and will give geometric mean for the prediction. Also 
+another approach is to create a base model for the feature extraction and than 
+train model on meta features. Another approach is to add Blending and KFold Split in the dataset.
+All of these features may give boost to accuracy. 

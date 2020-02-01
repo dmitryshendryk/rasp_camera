@@ -39,6 +39,7 @@ class VideoGet:
 
         self.first_frame = None
         self.next_frame = None
+        self.is_recording = False 
 
         # Init display font and timeout counters
         # font = cv2.FONT_HERSHEY_SIMPLEX
@@ -59,6 +60,7 @@ class VideoGet:
         t = Thread(target=self.get, args=(self.stopped, mqtt))
         t.setDaemon(True)
         t.start()
+        self.is_recording =True
         return self
 
     

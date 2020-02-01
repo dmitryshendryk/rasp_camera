@@ -60,6 +60,7 @@ class VideoGet:
         t = Thread(target=self.get, args=(self.stopped, mqtt))
         t.setDaemon(True)
         t.start()
+        print('Start video recording')
         self.is_recording =True
         return self
 

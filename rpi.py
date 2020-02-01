@@ -28,7 +28,7 @@ class RPI:
         cpu = CPUTemperature()
         
         now = datetime.now()
-        date_time = now.strftime("%H:%M:%S")
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         monitor = {'time': date_time, 'cpu_usage': cpu_usage, 'ram_percent_used': ram_percent_used, 'disk_percent_used': disk_percent_used,
                 'cpu_temperature': cpu.temperature}
 

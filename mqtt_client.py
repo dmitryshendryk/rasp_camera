@@ -82,10 +82,9 @@ class MQTTClient():
 
 
     def reboot_rpi(self, mqttc, obj, msg):
-        msg.payload = int(msg.payload)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg.payload:
-            print('Reboot RPI {0}'.format(msg.payload))
+        msg = json.loads(msg.payload)
+        print(msg)
+        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
@@ -94,10 +93,9 @@ class MQTTClient():
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id) , blob)
     
     def shutdown_rpi(self, mqttc, obj, msg):
-        msg.payload = int(msg.payload)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg.payload:
-            print('Shutdown RPI {0}'.format(msg.payload))
+        msg = json.loads(msg.payload)
+        print(msg)
+        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
@@ -107,9 +105,9 @@ class MQTTClient():
 
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
-            msg.payload = int(msg.payload)
-            rpi_id = int(os.environ['RPI_ID'])
-            if rpi_id == msg.payload:
+            msg = json.loads(msg.payload)
+            print(msg)
+            if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
                 print('Start video recording')
                 self.camera.start(self)
                 now = datetime.now()
@@ -121,9 +119,9 @@ class MQTTClient():
 
     def stop_video_recording(self, mqttc, obj, msg):
         if self.camera:
-            msg.payload = int(msg.payload)
-            rpi_id = int(os.environ['RPI_ID'])
-            if rpi_id == msg.payload:
+            msg = json.loads(msg.payload)
+            print(msg)
+            if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
                 print('Stop video recording')
                 self.camera.stop(self)
                 now = datetime.now()
@@ -138,9 +136,9 @@ class MQTTClient():
             self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
 
     def upload_video_to_server(self,mqttc, obj, msg):
-        msg.payload = int(msg.payload)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg.payload:
+        msg = json.loads(msg.payload)
+        print(msg)
+        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             remote_path = '/home/ubuntu/videos/' 
             

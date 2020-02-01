@@ -26,7 +26,7 @@ def get_rpi_data(rpi_api, client):
         blob = json.dumps(blob)
         result, mid = client.publish_message('store/prishna/rpi/' + config['type'] + '/' + str(rpi_id), blob)
         print('event published: result={}, mid={}'.format(result, mid))
-    # time.sleep(1)
+        time.sleep(1)
 
 
 def monitor_rpi(rpi_api, client):

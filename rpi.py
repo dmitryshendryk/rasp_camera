@@ -2,6 +2,7 @@ import psutil
 import struct
 import os
 from gpiozero import CPUTemperature
+from datetime import datetime
 
 class RPI:
 
@@ -25,8 +26,10 @@ class RPI:
         disk_free = disk.free / 2**30
         disk_percent_used = disk.percent
         cpu = CPUTemperature()
-
-        monitor = {'cpu_usage': cpu_usage, 'ram_percent_used': ram_percent_used, 'disk_percent_used': disk_percent_used,
+        
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        monitor = {'time': date_time 'cpu_usage': cpu_usage, 'ram_percent_used': ram_percent_used, 'disk_percent_used': disk_percent_used,
                 'cpu_temperature': cpu.temperature}
 
         return monitor

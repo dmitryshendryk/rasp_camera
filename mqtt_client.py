@@ -167,7 +167,7 @@ class MQTTClient():
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Upload Finished'})
     
     def clear_videos(self,mqttc, obj, msg):
-        msg = json.parse(msg.payload)
+        msg = json.loads(msg.payload)
         print(msg)
         rpi_id = int(os.environ['RPI_ID'])
         if rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:

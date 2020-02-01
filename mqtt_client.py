@@ -185,7 +185,7 @@ class MQTTClient():
             
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            blob = json.dumps({'time': now, 'log': 'Clear Videos'})
+            blob = json.dumps({'time': str(now), 'log': 'Clear Videos'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
 
 

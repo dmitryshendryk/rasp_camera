@@ -7,6 +7,7 @@ import shutil
 
 from camera import VideoGet
 from error import CameraNotConnected
+from datetime import datetime
 
 ROOT_DIR = os.path.abspath('./')
 
@@ -15,6 +16,7 @@ class MQTTClient():
     def __init__(self):
         self.ssh_paramiko = SftpClient()
         self.config = Config()
+        self.local_config = None 
         self.mqttc = mqtt.Client()
         self.mqttc.username_pw_set(Config.MQTT_USER, Config.MQTT_PASS)
         self.mqttc.on_message = self.on_message
@@ -23,11 +25,18 @@ class MQTTClient():
         self.mqttc.on_subscribe = self.on_subscribe
         self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
         self.camera = None
+        self.rpi_id = os.environ['RPI_ID']
         try:
             self.camera = VideoGet()
         except CameraNotConnected as e:
             print('Camera not connected __init__')
-            
+        
+        try:
+            with open('./cfg/configuration.json', 'r') as f:
+                self.local_config = json.load(f)
+        except ValueError:
+            print('JSON read error')
+
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
@@ -41,7 +50,7 @@ class MQTTClient():
         self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/clear_videos", self.clear_videos)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/upload_videos", self.upload_video_to_server)
-    
+
 
     def on_connect(self, mqttc, obj, flags, rc):
         print("rc: " + str(rc))
@@ -78,6 +87,9 @@ class MQTTClient():
             print('Reboot RPI {0}'.format(msg.payload))
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
             subprocess.call(bashCommand, shell=True)
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id) , {'time': now, 'log': 'reboot RPI'})
     
     def shutdown_rpi(self, mqttc, obj, msg):
         msg.payload = int(msg.payload)
@@ -86,6 +98,9 @@ class MQTTClient():
             print('Shutdown RPI {0}'.format(msg.payload))
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'shutdown RPI'})
 
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
@@ -94,6 +109,9 @@ class MQTTClient():
             if rpi_id == msg.payload:
                 print('Start video recording')
                 self.camera.start(self)
+                now = datetime.now()
+                date_time = now.strftime("%H:%M:%S")
+                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Start Recording Video'})
         else:
             print('Camera not connected start_video_recording')
 
@@ -104,8 +122,15 @@ class MQTTClient():
             if rpi_id == msg.payload:
                 print('Stop video recording')
                 self.camera.stop(self)
+                now = datetime.now()
+                date_time = now.strftime("%H:%M:%S")
+                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Stop Recording Video'})
         else:
             print('Camera not connected stop_video_recording')
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
+
     def upload_video_to_server(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)
         rpi_id = int(os.environ['RPI_ID'])
@@ -132,7 +157,13 @@ class MQTTClient():
                 self.ssh_paramiko.mkdir(second_remote_level)
 
             print("Upload videos to server")
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Upload Video to Server'})
             self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Upload Finished'})
     
     def clear_videos(self,mqttc, obj, msg):
         msg.payload = int(msg.payload)

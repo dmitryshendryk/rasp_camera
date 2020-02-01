@@ -40,8 +40,6 @@ if __name__ == "__main__":
 
 
     while True:
-        now = datetime.now()
-        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         blob = rpi_api.get_rpi_monitoring_data()
         blob['connectionStatus'] = True
         blob = json.dumps(blob)

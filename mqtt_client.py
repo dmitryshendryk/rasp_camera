@@ -89,7 +89,7 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'reboot RPI'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'reboot RPI'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id) , blob)
     
     def shutdown_rpi(self, mqttc, obj, msg):
@@ -100,7 +100,7 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'shutdown RPI'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'shutdown RPI'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
 
     def start_video_recording(self, mqttc, obj, msg):
@@ -112,7 +112,7 @@ class MQTTClient():
                 self.camera.start(self)
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'log': 'Start Recording Video'})
+                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Start Recording Video'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
         else:
             print('Camera not connected start_video_recording')
@@ -126,13 +126,13 @@ class MQTTClient():
                 self.camera.stop(self)
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'log': 'Stop Recording Video'})
+                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Stop Recording Video'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
         else:
             print('Camera not connected stop_video_recording')
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'Camera Not Connected'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Camera Not Connected'})
             self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
 
     def upload_video_to_server(self,mqttc, obj, msg):
@@ -163,12 +163,12 @@ class MQTTClient():
             print("Upload videos to server")
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'Upload Video to Server'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Upload Video to Server'})
             self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + str(self.rpi_id), blob)
             self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'Upload Finished'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Upload Finished'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
     
     def clear_videos(self,mqttc, obj, msg):
@@ -183,7 +183,7 @@ class MQTTClient():
             
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'log': 'Clear Videos'})
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config, 'log': 'Clear Videos'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
 
 

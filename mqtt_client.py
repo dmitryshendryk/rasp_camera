@@ -98,7 +98,6 @@ class MQTTClient():
     
     def shutdown_rpi(self, mqttc, obj, msg):
         msg = json.loads(msg.payload)
-        print(msg)
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
@@ -110,14 +109,9 @@ class MQTTClient():
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            print(msg)
             if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
-                print('Start video recording')
                 self.camera.start(self)
-                now = datetime.now()
-                date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Recording Video'})
-                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
+                
         else:
             print('Camera not connected start_video_recording')
 

@@ -10,6 +10,7 @@ import json
 import imutils
 import numpy as np
 
+from datetime import datetime
 
 rpi_id = os.environ['RPI_ID']
 
@@ -45,6 +46,13 @@ class VideoGet:
         # font = cv2.FONT_HERSHEY_SIMPLEX
         self.delay_counter = 0
         self.movement_persistent_counter = 0
+        self.local_config = None 
+
+        try:
+            with open('./cfg/configuration.json', 'r') as f:
+                self.local_config = json.load(f)
+        except ValueError:
+            print('JSON read error')
 
     def start(self, mqtt):
         if self.stopped.is_set():
@@ -61,6 +69,10 @@ class VideoGet:
         t.setDaemon(True)
         t.start()
         print('Start video recording')
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.local_config['type'], 'log': 'Start Recording Video'})
+        mqtt.mqttc.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(rpi_id), blob)
         self.is_recording =True
         return self
 
@@ -105,7 +117,6 @@ class VideoGet:
             if cv2.contourArea(c) > self.MIN_SIZE_FOR_MOVEMENT:
                 transient_movement_flag = True
                 
-                # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         if transient_movement_flag == True:
             movement_persistent_flag = True

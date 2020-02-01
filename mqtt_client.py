@@ -6,7 +6,7 @@ from rpi_paramiko import SftpClient
 import shutil
 import json
 
-from camera import VideoGet
+
 from error import CameraNotConnected
 from datetime import datetime
 
@@ -14,7 +14,7 @@ ROOT_DIR = os.path.abspath('./')
 
 class MQTTClient():
 
-    def __init__(self):
+    def __init__(self, camera_obj):
         self.ssh_paramiko = SftpClient()
         self.config = Config()
         self.local_config = None 
@@ -28,7 +28,7 @@ class MQTTClient():
         self.camera = None
         self.rpi_id = os.environ['RPI_ID']
         try:
-            self.camera = VideoGet()
+            self.camera = camera_obj
         except CameraNotConnected as e:
             print('Camera not connected __init__')
         

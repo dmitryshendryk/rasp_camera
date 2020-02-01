@@ -60,64 +60,61 @@ class VideoGet:
         t.start()
         return self
 
-    def start_movement_detection(self, mqtt):
-        t = Thread(target=self.get_movement, args=(self.stopped, mqtt))
-        t.setDaemon(True)
-        t.start()
     
-    def get_movement(self, stopped, mqtt):
+    def get_movement(self):
 
-        while True:
-            transient_movement_flag = False
-    
-            ret, frame = self.stream.read()
-            text = "Unoccupied"
+        transient_movement_flag = False
 
-            # If there's an error in capturing
-            if not ret:
-                print("CAPTURE ERROR")
-                continue
+        ret, frame = self.stream.read()
+        text = "Unoccupied"
 
-            frame = imutils.resize(frame, width = 750)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # If there's an error in capturing
+        if not ret:
+            print("CAPTURE ERROR")
+            continue
 
-            gray = cv2.GaussianBlur(gray, (21, 21), 0)
+        frame = imutils.resize(frame, width = 750)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            if first_frame is None: first_frame = gray    
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
-            delay_counter += 1
+        if first_frame is None: first_frame = gray    
 
-            if delay_counter > FRAMES_TO_PERSIST:
-                delay_counter = 0
-                first_frame = next_frame
+        delay_counter += 1
 
+        if delay_counter > FRAMES_TO_PERSIST:
+            delay_counter = 0
+            first_frame = next_frame
+
+            
+        next_frame = gray
+
+        frame_delta = cv2.absdiff(first_frame, next_frame)
+        thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
+
+        thresh = cv2.dilate(thresh, None, iterations = 2)
+        _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for c in cnts:
+
+            (x, y, w, h) = cv2.boundingRect(c)
+            
+            if cv2.contourArea(c) > MIN_SIZE_FOR_MOVEMENT:
+                transient_movement_flag = True
                 
-            next_frame = gray
+                # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            frame_delta = cv2.absdiff(first_frame, next_frame)
-            thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
+        if transient_movement_flag == True:
+            movement_persistent_flag = True
+            movement_persistent_counter = MOVEMENT_DETECTED_PERSISTENCE
 
-            thresh = cv2.dilate(thresh, None, iterations = 2)
-            _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            for c in cnts:
-
-                (x, y, w, h) = cv2.boundingRect(c)
-                
-                if cv2.contourArea(c) > MIN_SIZE_FOR_MOVEMENT:
-                    transient_movement_flag = True
-                    
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            if transient_movement_flag == True:
-                movement_persistent_flag = True
-                movement_persistent_counter = MOVEMENT_DETECTED_PERSISTENCE
-
-            if movement_persistent_counter > 0:
-                text = "Movement Detected " + str(movement_persistent_counter)
-                movement_persistent_counter -= 1
-            else:
-                text = "No Movement Detected"
+        if movement_persistent_counter > 0:
+            text = "Movement Detected " + str(movement_persistent_counter)
+            movement_persistent_counter -= 1
+            return True
+        else:
+            text = "No Movement Detected"
+            return False 
 
 
     def get(self, stopped, mqtt):

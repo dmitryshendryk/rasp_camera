@@ -13,6 +13,7 @@ from utils import *
 from config import Config
 from mqtt_client import MQTTClient
 from rpi import RPI
+from camera import VideoGet
 
 
 pid = os.getpid()
@@ -51,7 +52,8 @@ if __name__ == "__main__":
     with open('./cfg/configuration.json', 'r') as f:
         config = json.load(f)
 
-    client = MQTTClient()
+    camera = VideoGet()
+    client = MQTTClient(camera)
     rpi_api = RPI()
    
     client.mqttc.loop_start()
@@ -59,11 +61,9 @@ if __name__ == "__main__":
     monitor_rpi(rpi_api, client)
 
     while True:
-        pass 
 
-        # blob = rpi_api.get_rpi_monitoring_data()
-        # blob['connectionStatus'] = True
-        # blob = json.dumps(blob)
-        # result, mid = client.publish_message('store/prishna/rpi/' + config['type'] + '/' + str(rpi_id), blob)
-        # print('event published: result={}, mid={}'.format(result, mid))
+        is_movement = get_movement()
+        print(is_movement)
+
+       
 

@@ -55,10 +55,11 @@ if __name__ == "__main__":
    
     client.mqttc.loop_start()
 
+    monitor_rpi(rpi_api, client)
 
     while True:
+        pass 
 
-        monitor_rpi(rpi_api, client)
         # blob = rpi_api.get_rpi_monitoring_data()
         # blob['connectionStatus'] = True
         # blob = json.dumps(blob)

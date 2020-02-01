@@ -72,7 +72,7 @@ class VideoGet:
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.local_config['type'], 'log': 'Start Recording Video'})
-        mqtt.mqttc.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(rpi_id), blob)
+        mqtt.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(rpi_id), blob)
         self.is_recording =True
         return self
 

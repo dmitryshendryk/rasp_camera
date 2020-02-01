@@ -4,6 +4,7 @@ import subprocess
 import os 
 from rpi_paramiko import SftpClient
 import shutil
+import json
 
 from camera import VideoGet
 from error import CameraNotConnected

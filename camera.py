@@ -13,19 +13,7 @@ import numpy as np
 
 rpi_id = os.environ['RPI_ID']
 
-FRAMES_TO_PERSIST = 10
 
-MIN_SIZE_FOR_MOVEMENT = 2000
-
-MOVEMENT_DETECTED_PERSISTENCE = 100
-
-first_frame = None
-next_frame = None
-
-# Init display font and timeout counters
-font = cv2.FONT_HERSHEY_SIMPLEX
-delay_counter = 0
-movement_persistent_counter = 0
 
 
 class VideoGet:
@@ -43,6 +31,19 @@ class VideoGet:
         # self.stopped = False
         self.stopped= threading.Event()
         self.config = Config()
+        self.FRAMES_TO_PERSIST = 10
+
+        self.MIN_SIZE_FOR_MOVEMENT = 2000
+
+        self.MOVEMENT_DETECTED_PERSISTENCE = 100
+
+        self.first_frame = None
+        self.next_frame = None
+
+        # Init display font and timeout counters
+        # font = cv2.FONT_HERSHEY_SIMPLEX
+        self.delay_counter = 0
+        self.movement_persistent_counter = 0
 
     def start(self, mqtt):
         if self.stopped.is_set():
@@ -77,18 +78,18 @@ class VideoGet:
 
         gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
-        if first_frame is None: first_frame = gray    
+        if self.first_frame is None: self.first_frame = gray    
 
-        delay_counter += 1
+        self.delay_counter += 1
 
-        if delay_counter > FRAMES_TO_PERSIST:
-            delay_counter = 0
-            first_frame = next_frame
+        if self.delay_counter > self.FRAMES_TO_PERSIST:
+            self.delay_counter = 0
+            self.first_frame = self.next_frame
 
             
-        next_frame = gray
+        self.next_frame = gray
 
-        frame_delta = cv2.absdiff(first_frame, next_frame)
+        frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
         thresh = cv2.dilate(thresh, None, iterations = 2)
@@ -98,18 +99,18 @@ class VideoGet:
 
             (x, y, w, h) = cv2.boundingRect(c)
             
-            if cv2.contourArea(c) > MIN_SIZE_FOR_MOVEMENT:
+            if cv2.contourArea(c) > self.MIN_SIZE_FOR_MOVEMENT:
                 transient_movement_flag = True
                 
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         if transient_movement_flag == True:
             movement_persistent_flag = True
-            movement_persistent_counter = MOVEMENT_DETECTED_PERSISTENCE
+            self.movement_persistent_counter = MOVEMENT_DETECTED_PERSISTENCE
 
-        if movement_persistent_counter > 0:
-            text = "Movement Detected " + str(movement_persistent_counter)
-            movement_persistent_counter -= 1
+        if self.movement_persistent_counter > 0:
+            text = "Movement Detected " + str(self.movement_persistent_counter)
+            self.movement_persistent_counter -= 1
             return True
         else:
             text = "No Movement Detected"

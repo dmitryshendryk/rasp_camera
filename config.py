@@ -9,7 +9,7 @@ class Config:
         except FileNotFoundError as error:
             print(error)
 
-    MQTT_HOST = '18.185.47.167'
+    MQTT_HOST = '52.59.124.185'
     MQTT_PORT = 1883
     MQTT_KEEP_ALIVE = 60
     MQTT_PASS = '8Delusion-Serif'

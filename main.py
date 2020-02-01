@@ -68,7 +68,6 @@ if __name__ == "__main__":
         if is_movement:
             is_movement = False
             camera.start(client)
-        print(is_movement)
 
        
 

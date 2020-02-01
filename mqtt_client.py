@@ -60,15 +60,17 @@ class MQTTClient():
 
 
     def on_message(self, mqttc, obj, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        # print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        pass
 
     def on_command(self, mqttc, obj, msg):
         print('Command topics')
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        # print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
 
     def on_publish(self, mqttc, obj, mid):
-        print("mid: " + str(mid))
+        # print("mid: " + str(mid))
+        pass 
 
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):

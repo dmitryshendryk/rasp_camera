@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     while True:
 
-        is_movement = get_movement()
+        is_movement = camera.get_movement()
         print(is_movement)
 
        

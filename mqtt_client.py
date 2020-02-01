@@ -90,7 +90,8 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id) , {'time': now, 'log': 'reboot RPI'})
+            blob = json.dumps({'time': now, 'log': 'reboot RPI'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id) , blob)
     
     def shutdown_rpi(self, mqttc, obj, msg):
         msg.payload = int(msg.payload)
@@ -101,7 +102,8 @@ class MQTTClient():
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'shutdown RPI'})
+            blob = json.dumps({'time': now, 'log': 'shutdown RPI'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
 
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
@@ -112,7 +114,8 @@ class MQTTClient():
                 self.camera.start(self)
                 now = datetime.now()
                 date_time = now.strftime("%H:%M:%S")
-                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Start Recording Video'})
+                blob = json.dumps({'time': now, 'log': 'Start Recording Video'})
+                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
         else:
             print('Camera not connected start_video_recording')
 
@@ -125,11 +128,13 @@ class MQTTClient():
                 self.camera.stop(self)
                 now = datetime.now()
                 date_time = now.strftime("%H:%M:%S")
-                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Stop Recording Video'})
+                blob = json.dumps({'time': now, 'log': 'Stop Recording Video'})
+                self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
         else:
             print('Camera not connected stop_video_recording')
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
+            blob = json.dumps({'time': now, 'log': 'Camera Not Connected'})
             self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
 
     def upload_video_to_server(self,mqttc, obj, msg):
@@ -160,11 +165,13 @@ class MQTTClient():
             print("Upload videos to server")
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
+            blob = json.dumps({'time': now, 'log': 'Upload Video to Server'})
             self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Upload Video to Server'})
             self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Upload Finished'})
+            blob = json.dumps({'time': now, 'log': 'Upload Finished'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
     
     def clear_videos(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)
@@ -178,6 +185,7 @@ class MQTTClient():
             
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Clear Videos'})
+            blob = json.dumps({'time': now, 'log': 'Clear Videos'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), blob)
 
 

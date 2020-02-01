@@ -71,7 +71,6 @@ class VideoGet:
         # If there's an error in capturing
         if not ret:
             print("CAPTURE ERROR")
-            continue
 
         frame = imutils.resize(frame, width = 750)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

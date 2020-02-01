@@ -60,14 +60,14 @@ if __name__ == "__main__":
 
     monitor_rpi(rpi_api, client)
     is_movement = False 
-    
+
     while True:
         if not camera.is_recording:
             is_movement = camera.get_movement()
 
         if is_movement:
             is_movement = False
-            camera.start()
+            camera.start(client)
         print(is_movement)
 
        

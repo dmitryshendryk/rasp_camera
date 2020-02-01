@@ -171,8 +171,13 @@ class MQTTClient():
         print(msg)
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             print('CLear videos')
+            
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             if os.path.exists(local_path) and os.path.isdir(local_path):
                 shutil.rmtree(local_path + '/')
+            
+            now = datetime.now()
+            date_time = now.strftime("%H:%M:%S")
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(self.rpi_id), {'time': now, 'log': 'Clear Videos'})
 
 

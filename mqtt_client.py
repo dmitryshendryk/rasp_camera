@@ -169,8 +169,7 @@ class MQTTClient():
     def clear_videos(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)
         print(msg)
-        rpi_id = int(os.environ['RPI_ID'])
-        if rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             print('CLear videos')
             local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
             if os.path.exists(local_path) and os.path.isdir(local_path):

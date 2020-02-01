@@ -30,6 +30,9 @@ if __name__ == "__main__":
 
     rpi_id = os.environ['RPI_ID']
 
+    with open('./cfg/configuration.json', 'r') as f:
+        config = json.load(f)
+
     client = MQTTClient()
     rpi_api = RPI()
    
@@ -42,7 +45,7 @@ if __name__ == "__main__":
         blob = rpi_api.get_rpi_monitoring_data()
         blob['connectionStatus'] = True
         blob = json.dumps(blob)
-        result, mid = client.publish_message('store/prishna/rpi/' + str(rpi_id), blob)
+        result, mid = client.publish_message('store/prishna/rpi/' + config['type'] + '/' + str(rpi_id), blob)
         print('event published: result={}, mid={}'.format(result, mid))
 
         time.sleep(1)

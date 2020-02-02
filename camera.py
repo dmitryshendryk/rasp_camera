@@ -142,7 +142,7 @@ class VideoGet:
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), blob)
+                    mqtt.mqttc.publish("/camera/recording/" + self.local_config['type'] + '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

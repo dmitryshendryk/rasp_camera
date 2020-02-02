@@ -153,7 +153,7 @@ class VideoGet:
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
 
-        mqtt.mqttc.publish("/camera/recording/" + str(rpi_id), blob)
+        mqtt.mqttc.publish("/camera/recording/" + self.local_config['type'] + '/' + str(rpi_id), blob)
         self.is_recording = False
         self.stopped.set()
         

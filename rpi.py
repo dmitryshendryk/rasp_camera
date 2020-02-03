@@ -18,7 +18,7 @@ class RPI:
         self.count = 0 
         self.upload=psutil.net_io_counters(pernic=True)['wlan0'][0]
         self.download=psutil.net_io_counters(pernic=True)['wlan0'][1]
-        self.up_down=(upload,download)
+        self.up_down=(self.upload,self.download)
         self.ul=0.00
         self.dl=0.00
         self.t0 = time.time()

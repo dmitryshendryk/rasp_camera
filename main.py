@@ -14,7 +14,7 @@ from config import Config
 from mqtt_client import MQTTClient
 from rpi import RPI
 from camera import VideoGet
-
+import time
 import argparse
 
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
         if args.device_type == 'master':
             if not camera.is_recording:
-                sleep(2)
+                time.sleep(2)
                 is_movement = camera.get_movement()
 
             if is_movement:

@@ -11,8 +11,8 @@ qry=''
 ul=0.00
 dl=0.00
 t0 = time.time()
-upload=psutil.net_io_counters(pernic=True)['en0'][0]
-download=psutil.net_io_counters(pernic=True)['en0'][1]
+upload=psutil.net_io_counters(pernic=True)['wlan0'][0]
+download=psutil.net_io_counters(pernic=True)['wlan0'][1]
 up_down=(upload,download)
 
 

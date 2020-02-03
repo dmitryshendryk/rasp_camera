@@ -115,12 +115,12 @@ class MQTTClient():
         else:
             print('Camera not connected start_video_recording')
 
-    def automode(self, mqttc, obj, mwg):
-        if self.camera:
-            msg = json.loads(msg.payload)
-            print(msg)
-            if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
-                print('Start automode')
+    # def automode(self, mqttc, obj, mwg):
+    #     if self.camera:
+    #         msg = json.loads(msg.payload)
+    #         print(msg)
+    #         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+    #             print('Start automode')
                 
 
     def stop_video_recording(self, mqttc, obj, msg):

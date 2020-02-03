@@ -78,7 +78,6 @@ if __name__ == "__main__":
 
         if args.device_type == 'master':
             if not camera.is_recording:
-                time.sleep(2)
                 is_movement = camera.get_movement()
 
             if is_movement:

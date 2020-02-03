@@ -73,7 +73,7 @@ if __name__ == "__main__":
         print('Start RPI as Master')
     elif args.device_type == 'slave':
         print('Start RPI as Slave')
-        
+
     while True:
 
         if args.device_type == 'master':
@@ -83,7 +83,7 @@ if __name__ == "__main__":
             if is_movement:
                 is_movement = False
                 camera.start(client)
-        elif: args.device_type == 'slave':
+        elif args.device_type == 'slave':
             pass 
 
        

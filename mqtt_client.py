@@ -52,7 +52,6 @@ class MQTTClient():
         self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/clear_videos", self.clear_videos)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/upload_videos", self.upload_video_to_server)
-        self.mqttc.message_callback_add("store/prishna/rpi/actions/auto", self.automode)
 
 
     def on_connect(self, mqttc, obj, flags, rc):

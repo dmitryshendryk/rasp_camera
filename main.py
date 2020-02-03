@@ -77,6 +77,7 @@ if __name__ == "__main__":
     while True:
 
         if args.device_type == 'master':
+            print(camera.is_recording)
             if not camera.is_recording:
                 is_movement = camera.get_movement()
 

@@ -86,7 +86,7 @@ if __name__ == "__main__":
                 blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
                 client.publish_message("store/prishna/rpi/actions/start_video", blob)
                 
-        elif args.device_type == 'slave':
+        if args.device_type == 'slave':
             pass 
 
        

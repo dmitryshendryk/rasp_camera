@@ -59,6 +59,6 @@ class RPI:
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         monitor = {'time': date_time, 'cpu_usage': cpu_usage, 'ram_percent_used': ram_percent_used, 'disk_percent_used': disk_percent_used,
-                'cpu_temperature': cpu.temperature, 'ul': self.ul, 'dl': self.dl}
+                'cpu_temperature': cpu.temperature, 'ul': 'UL: {:0.2f} kB/s \n'.format(self.ul), 'dl': 'DL: {:0.2f} kB/s'.format(dl)}
 
         return monitor

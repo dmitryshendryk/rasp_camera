@@ -15,6 +15,8 @@ from mqtt_client import MQTTClient
 from rpi import RPI
 from camera import VideoGet
 
+import argparse
+
 
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))
@@ -39,7 +41,13 @@ def monitor_rpi(rpi_api, client):
 
 
 if __name__ == "__main__":
-        
+
+    parser = argparse.ArgumentParser(
+       description='RPIs')
+    
+    parser.add_argument('--device_type')
+
+    args = parser.parse_args()
 
     while not internet():
         print('Waiting for internet connection')
@@ -60,14 +68,23 @@ if __name__ == "__main__":
 
     monitor_rpi(rpi_api, client)
     is_movement = False 
-
+    ## options to start as slave or master 
+    if args.device_type == 'master':
+        print('Start RPI as Master')
+    elif args.device_type == 'slave':
+        print('Start RPI as Slave')
+        
     while True:
-        if not camera.is_recording:
-            is_movement = camera.get_movement()
 
-        if is_movement:
-            is_movement = False
-            camera.start(client)
+        if args.device_type == 'master':
+            if not camera.is_recording:
+                is_movement = camera.get_movement()
+
+            if is_movement:
+                is_movement = False
+                camera.start(client)
+        elif: args.device_type == 'slave':
+            pass 
 
        
 

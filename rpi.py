@@ -3,6 +3,8 @@ import struct
 import os
 from gpiozero import CPUTemperature
 from datetime import datetime
+import time 
+
 
 
 count=0

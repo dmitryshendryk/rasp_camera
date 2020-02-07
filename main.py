@@ -32,7 +32,7 @@ def get_rpi_data(rpi_api, client, config):
         time.sleep(1)
 
 
-def monitor_rpi(rpi_api, client):
+def monitor_rpi(rpi_api, client, config):
     t = Thread(target=get_rpi_data, args=(rpi_api, client, config))
     t.setDaemon(True)
     t.start()

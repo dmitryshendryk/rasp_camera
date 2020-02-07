@@ -60,10 +60,10 @@ class VideoGet:
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S") ### change name  
         #### <timestamp>_<recordingdate>_<length_in_milliseconds>_<camera_id>_<camera_set_id>_<shop_id>_<compression>_<resolution>.m
-        fourcc = cv2.VideoWriter_fourcc(*"H264")
+        fourcc = cv2.VideoWriter_fourcc(*"MP4V")
         video_save_path = './' + self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
-        file_name = video_save_path + '/' + str(now_date) + '.avi'
+        file_name = video_save_path + '/' + str(now_date) + '.mp4'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (1920,1080))
         t = Thread(target=self.get, args=(self.stopped, mqtt))
         t.setDaemon(True)
@@ -166,9 +166,9 @@ class VideoGet:
 
 
 ### No motion control on slave                                     ((((Done ))))
-### Only master will start videos on slave when movement detected  ((((Done, need to test))))
+### Only master will start videos on slave when movement detected  ((((Done)))), bug when stops the video it starts again
 ### setup the recodring time after movement detection 
 ### cron for upload all videos and delete them 
 ### start and stop recording for both master and slave 
-### Speed of upload                                                 ((((((Need integrate script into monitoring thread))))))
+### Speed of upload                                                 ((((((Done))))))
 ### change between shelfs and rpis in control and config

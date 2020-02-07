@@ -22,7 +22,7 @@ pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))
 
 
-def get_rpi_data(rpi_api, client):
+def get_rpi_data(rpi_api, client, config):
     while True:
         blob = rpi_api.get_rpi_monitoring_data()
         blob['connectionStatus'] = True
@@ -33,7 +33,7 @@ def get_rpi_data(rpi_api, client):
 
 
 def monitor_rpi(rpi_api, client):
-    t = Thread(target=get_rpi_data, args=(rpi_api, client))
+    t = Thread(target=get_rpi_data, args=(rpi_api, client, config))
     t.setDaemon(True)
     t.start()
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
    
     client.mqttc.loop_start()
 
-    monitor_rpi(rpi_api, client)
+    monitor_rpi(rpi_api, client, config)
     is_movement = False 
     ## options to start as slave or master 
     if args.device_type == 'master':

@@ -57,12 +57,10 @@ if __name__ == "__main__":
 
     rpi_id = os.environ['RPI_ID']
 
-    with open('./cfg/configuration.json', 'r') as f:
-        config = json.load(f)
 
-    camera = VideoGet()
-    client = MQTTClient(camera)
-    rpi_api = RPI()
+    camera = VideoGet(rpi_config=config)
+    client = MQTTClient(camera, rpi_config=config)
+    rpi_api = RPI(rpi_config=config)
    
     client.mqttc.loop_start()
 

@@ -8,6 +8,9 @@ class Config:
                 self._configuration_data = json.load(configuration_file)
         except FileNotFoundError as error:
             print(error)
+        
+    def set_config(self, json):
+        self._configuration_data['data'] = json
 
     MQTT_HOST = '52.59.124.185'
     MQTT_PORT = 1883

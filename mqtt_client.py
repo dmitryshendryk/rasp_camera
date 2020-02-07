@@ -14,10 +14,10 @@ ROOT_DIR = os.path.abspath('./')
 
 class MQTTClient():
 
-    def __init__(self, camera_obj):
+    def __init__(self, camera_obj, rpi_config=None):
         self.ssh_paramiko = SftpClient()
-        self.config = Config()
-        self.local_config = None 
+        # self.config = Config()
+        self.local_config = rpi_config._configuration_data 
         self.mqttc = mqtt.Client()
         self.mqttc.username_pw_set(Config.MQTT_USER, Config.MQTT_PASS)
         self.mqttc.on_message = self.on_message
@@ -32,11 +32,6 @@ class MQTTClient():
         except CameraNotConnected as e:
             print('Camera not connected __init__')
         
-        try:
-            with open('./cfg/configuration.json', 'r') as f:
-                self.local_config = json.load(f)
-        except ValueError:
-            print('JSON read error')
 
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
@@ -161,10 +156,10 @@ class MQTTClient():
         msg = json.loads(msg.payload)
         print(msg)
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
-            local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
             remote_path = '/home/ubuntu/videos/' 
             
-            first_remote_level = remote_path + self.config._configuration_data['location']
+            first_remote_level = remote_path + self.local_config['location']
             
             try:
                 self.ssh_paramiko.chdir(first_remote_level)
@@ -173,7 +168,7 @@ class MQTTClient():
                 print('Create directory')
                 self.ssh_paramiko.mkdir(first_remote_level)
 
-            second_remote_level = remote_path + '/' +  self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
             
             try:
                 self.ssh_paramiko.chdir(second_remote_level)
@@ -199,7 +194,7 @@ class MQTTClient():
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
             print('CLear videos')
             
-            local_path = self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
             if os.path.exists(local_path) and os.path.isdir(local_path):
                 shutil.rmtree(local_path + '/')
             

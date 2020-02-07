@@ -3,7 +3,7 @@ from threading import Thread
 import cv2
 from datetime import datetime
 import pathlib
-from config import Config
+# from config import Config
 import os
 from error import CameraNotConnected
 import json
@@ -23,7 +23,7 @@ class VideoGet:
     with a dedicated thread.
     """
 
-    def __init__(self, src=0):
+    def __init__(self, src=0, rpi_config=None):
         self.stream = cv2.VideoCapture(src)
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
@@ -31,7 +31,7 @@ class VideoGet:
         (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()
-        self.config = Config()
+        self.config = rpi_config
         self.FRAMES_TO_PERSIST = 10
 
         self.MIN_SIZE_FOR_MOVEMENT = 2000
@@ -46,13 +46,8 @@ class VideoGet:
         # font = cv2.FONT_HERSHEY_SIMPLEX
         self.delay_counter = 0
         self.movement_persistent_counter = 0
-        self.local_config = None 
+        self.config._configuration_data = rpi_config._configuration_data
 
-        try:
-            with open('./cfg/configuration.json', 'r') as f:
-                self.local_config = json.load(f)
-        except ValueError:
-            print('JSON read error')
 
     def start(self, mqtt):
         if self.stopped.is_set():
@@ -71,8 +66,8 @@ class VideoGet:
         print('Start video recording')
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.local_config['type'], 'log': 'Start Recording Video'})
-        mqtt.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + str(rpi_id), blob)
+        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Start Recording Video'})
+        mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' + str(rpi_id), blob)
         self.is_recording =True
         return self
 
@@ -142,7 +137,7 @@ class VideoGet:
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    mqtt.mqttc.publish("/camera/recording/" + self.local_config['type'] + '/' + str(rpi_id), blob)
+                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] + '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
@@ -153,7 +148,7 @@ class VideoGet:
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
 
-        mqtt.mqttc.publish("/camera/recording/" + self.local_config['type'] + '/' + str(rpi_id), blob)
+        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] + '/' + str(rpi_id), blob)
         self.is_recording = False
         self.stopped.set()
         

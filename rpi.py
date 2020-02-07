@@ -13,8 +13,7 @@ import time
 
 class RPI:
 
-    def __init__(self):
-        pass
+    def __init__(self rpi_config=None):
         self.count = 0 
         self.upload=psutil.net_io_counters(pernic=True)['wlan0'][0]
         self.download=psutil.net_io_counters(pernic=True)['wlan0'][1]

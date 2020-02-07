@@ -124,7 +124,7 @@ class MQTTClient():
                 with open('./cfg/configuration.json', mode='w', encoding='utf-8') as f:
                     print("Writing to file")
                     self.local_config = json.load(f)
-                    # print(self.local_config)
+                    print(self.local_config)
                     for key in msg.data:
                         self.local_config[key] = msg.data[key]
             except ValueError:

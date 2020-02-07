@@ -126,8 +126,9 @@ class MQTTClient():
                     self.local_config = json.load(f)
                     print(self.local_config)
                     print(msg['data'])
-                    for key in msg.data:
-                        self.local_config[key] = msg.data[key]
+                    for key in msg['data']:
+                        self.local_config[key] = msg['data'][key]
+                    print(self.local_config)
             except ValueError:
                 print('JSON read error')
                 

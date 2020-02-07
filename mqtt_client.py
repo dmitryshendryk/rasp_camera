@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from config import Config
+# from config import Config
 import subprocess
 import os 
 from rpi_paramiko import SftpClient
@@ -19,12 +19,12 @@ class MQTTClient():
         # self.config = Config()
         self.local_config = rpi_config._configuration_data 
         self.mqttc = mqtt.Client()
-        self.mqttc.username_pw_set(Config.MQTT_USER, Config.MQTT_PASS)
+        self.mqttc.username_pw_set(rpi_config.MQTT_USER, rpi_config.MQTT_PASS)
         self.mqttc.on_message = self.on_message
         self.mqttc.on_connect = self.on_connect
         self.mqttc.on_publish = self.on_publish
         self.mqttc.on_subscribe = self.on_subscribe
-        self.mqttc.connect(Config.MQTT_HOST, Config.MQTT_PORT, Config.MQTT_KEEP_ALIVE)
+        self.mqttc.connect(rpi_config.MQTT_HOST, rpi_config.MQTT_PORT, rpi_config.MQTT_KEEP_ALIVE)
         self.camera = None
         self.rpi_id = os.environ['RPI_ID']
         try:

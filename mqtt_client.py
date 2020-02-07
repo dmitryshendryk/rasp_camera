@@ -120,10 +120,10 @@ class MQTTClient():
         msg = json.loads(msg.payload)
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['location']: 
             try:
-            with open('./cfg/configuration.json', 'a') as f:
-                self.local_config = json.load(f)
-                for key in msg.data:
-                    self.local_config[key] = msg.data[key]
+                with open('./cfg/configuration.json', 'a') as f:
+                    self.local_config = json.load(f)
+                    for key in msg.data:
+                        self.local_config[key] = msg.data[key]
             except ValueError:
                 print('JSON read error')
                 

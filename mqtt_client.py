@@ -121,10 +121,11 @@ class MQTTClient():
         print("Updating config")
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['location']: 
             try:
-                with open('./cfg/configuration.json', mode='w', encoding='utf-8') as f:
+                with open('./cfg/configuration.json') as f:
                     print("Writing to file")
                     self.local_config = json.load(f)
                     print(self.local_config)
+                    print(msg.data)
                     for key in msg.data:
                         self.local_config[key] = msg.data[key]
             except ValueError:

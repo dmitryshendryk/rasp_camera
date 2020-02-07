@@ -1,7 +1,9 @@
 {
     "location": "Munich",
     "type": "master",
-    "record_threshold": 10,
-    "reboot_time": "10:30",
-    "time_erase_local_files": "11:30"
+    "data" : { 
+        "record_threshold": 10,
+        "reboot_time": "10:30",
+        "time_erase_local_files": "11:30"
+    }
 }

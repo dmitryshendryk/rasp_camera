@@ -127,8 +127,11 @@ class MQTTClient():
                     print(self.local_config)
                     print(msg['data'])
                     for key in msg['data']:
-                        self.local_config[key] = msg['data'][key]
+                        self.local_config['data'][key] = msg['data'][key]
                     print(self.local_config)
+                
+                with open('./cfg/configuration.json','w') as f: 
+                    json.dump(self.local_config, f, indent=4) 
             except ValueError:
                 print('JSON read error')
                 

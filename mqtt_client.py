@@ -117,7 +117,7 @@ class MQTTClient():
             print('Camera not connected start_video_recording')
 
     def update_rpi_config(self, mqttc, obj, msg):
-       msg = json.loads(msg.payload)
+        msg = json.loads(msg.payload)
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['location']: 
             try:
             with open('./cfg/configuration.json', 'a') as f:

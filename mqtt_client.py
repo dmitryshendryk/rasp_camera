@@ -125,7 +125,7 @@ class MQTTClient():
                     print("Writing to file")
                     self.local_config = json.load(f)
                     print(self.local_config)
-                    print(msg.data)
+                    print(msg)
                     for key in msg.data:
                         self.local_config[key] = msg.data[key]
             except ValueError:

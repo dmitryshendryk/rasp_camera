@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     rpi_id = os.environ['RPI_ID']
 
-
+    config = Config()
     camera = VideoGet(rpi_config=config)
     client = MQTTClient(camera, rpi_config=config)
     rpi_api = RPI(rpi_config=config)

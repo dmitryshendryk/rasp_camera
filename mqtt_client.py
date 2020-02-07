@@ -118,9 +118,11 @@ class MQTTClient():
 
     def update_rpi_config(self, mqttc, obj, msg):
         msg = json.loads(msg.payload)
+        print("Updating config")
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['location']: 
             try:
                 with open('./cfg/configuration.json', 'a') as f:
+                    print("Writing to file")
                     self.local_config = json.load(f)
                     for key in msg.data:
                         self.local_config[key] = msg.data[key]

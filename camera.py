@@ -131,6 +131,7 @@ class VideoGet:
                 return False 
         else:
             print("Movement detection stopped")
+            self.first_frame, self.next_frame = None, None 
             return False
 
     def get(self, stopped, mqtt):

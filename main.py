@@ -76,19 +76,19 @@ if __name__ == "__main__":
 
     while True:
 
-        # if config._configuration_data['type'] == 'master':
-        #     if not camera.is_recording:
-        #         print('Get Movement')
-        #         camera.is_movement = camera.get_movement()
+        if config._configuration_data['type'] == 'master':
+            if not camera.is_recording:
+                print('Get Movement')
+                camera.is_movement = camera.get_movement()
 
-        #     if camera.is_movement:
-        #         camera.is_movement = False
-        #         camera.start(client)
-        #         blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
-        #         client.publish_message("store/prishna/rpi/actions/start_video", blob)
+            if camera.is_movement:
+                camera.is_movement = False
+                camera.start(client)
+                blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
+                client.publish_message("store/prishna/rpi/actions/start_video", blob)
                 
-        # if config._configuration_data['type'] == 'slave':
-        #     pass 
+        if config._configuration_data['type'] == 'slave':
+            pass 
 
-        pass       
+       
 

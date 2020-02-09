@@ -76,10 +76,10 @@ if __name__ == "__main__":
 
         if config._configuration_data['type'] == 'master':
             if not camera.is_recording:
-                is_movement = camera.get_movement()
+                camera.is_movement = camera.get_movement()
 
-            if is_movement:
-                is_movement = False
+            if camera.is_movement:
+                camera.is_movement = False
                 camera.start(client)
                 blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
                 client.publish_message("store/prishna/rpi/actions/start_video", blob)

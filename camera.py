@@ -41,6 +41,8 @@ class VideoGet:
         self.first_frame = None
         self.next_frame = None
         self.is_recording = False 
+        self.is_movement = False
+        self.enable_movement = True
 
         # Init display font and timeout counters
         # font = cv2.FONT_HERSHEY_SIMPLEX
@@ -50,6 +52,8 @@ class VideoGet:
 
 
     def start(self, mqtt):
+        self.is_recording =True
+        print('Start video recording')
         if self.stopped.is_set():
             self.stopped.clear()
         now = datetime.now()
@@ -63,68 +67,70 @@ class VideoGet:
         t = Thread(target=self.get, args=(self.stopped, mqtt))
         t.setDaemon(True)
         t.start()
-        print('Start video recording')
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Start Recording Video'})
         mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' + str(rpi_id), blob)
-        self.is_recording =True
+        
         return self
 
     
     def get_movement(self):
+        if self.enable_movement:
 
-        transient_movement_flag = False
+            transient_movement_flag = False
 
-        ret, frame = self.stream.read()
-        text = "Unoccupied"
+            ret, frame = self.stream.read()
+            text = "Unoccupied"
 
-        # If there's an error in capturing
-        if not ret:
-            print("CAPTURE ERROR")
+            # If there's an error in capturing
+            if not ret:
+                print("CAPTURE ERROR")
 
-        frame = imutils.resize(frame, width = 750)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            frame = imutils.resize(frame, width = 750)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        gray = cv2.GaussianBlur(gray, (21, 21), 0)
+            gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
-        if self.first_frame is None: self.first_frame = gray    
+            if self.first_frame is None: self.first_frame = gray    
 
-        self.delay_counter += 1
+            self.delay_counter += 1
 
-        if self.delay_counter > self.FRAMES_TO_PERSIST:
-            self.delay_counter = 0
-            self.first_frame = self.next_frame
+            if self.delay_counter > self.FRAMES_TO_PERSIST:
+                self.delay_counter = 0
+                self.first_frame = self.next_frame
 
-            
-        self.next_frame = gray
-
-        frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
-        thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
-
-        thresh = cv2.dilate(thresh, None, iterations = 2)
-        _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        for c in cnts:
-
-            (x, y, w, h) = cv2.boundingRect(c)
-            
-            if cv2.contourArea(c) > self.MIN_SIZE_FOR_MOVEMENT:
-                transient_movement_flag = True
                 
+            self.next_frame = gray
 
-        if transient_movement_flag == True:
-            movement_persistent_flag = True
-            self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
+            frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
+            thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
-        if self.movement_persistent_counter > 0:
-            text = "Movement Detected " + str(self.movement_persistent_counter)
-            self.movement_persistent_counter -= 1
-            return True
+            thresh = cv2.dilate(thresh, None, iterations = 2)
+            _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            for c in cnts:
+
+                (x, y, w, h) = cv2.boundingRect(c)
+                
+                if cv2.contourArea(c) > self.MIN_SIZE_FOR_MOVEMENT:
+                    transient_movement_flag = True
+                    
+
+            if transient_movement_flag == True:
+                movement_persistent_flag = True
+                self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
+
+            if self.movement_persistent_counter > 0:
+                text = "Movement Detected " + str(self.movement_persistent_counter)
+                self.movement_persistent_counter -= 1
+                return True
+            else:
+                text = "No Movement Detected"
+                return False 
         else:
-            text = "No Movement Detected"
-            return False 
-
+            print("Movement detection stopped")
+            return False
 
     def get(self, stopped, mqtt):
         blob = {}

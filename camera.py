@@ -9,7 +9,7 @@ from error import CameraNotConnected
 import json
 import imutils
 import numpy as np
-
+import time 
 from datetime import datetime
 
 rpi_id = os.environ['RPI_ID']
@@ -130,8 +130,12 @@ class VideoGet:
         blob = {}
         blob['connectionStatus'] = True
         blob = json.dumps(blob)
-
+        
+        start = time.time()
         while not stopped.is_set():
+            if time.time() - start > self.config._configuration_data['type']:
+                self.stop(mqtt)
+                
             if not self.grabbed:
                 self.stop(mqtt)
             else:

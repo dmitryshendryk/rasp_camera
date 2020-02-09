@@ -134,6 +134,7 @@ class VideoGet:
         start = time.time()
         while not stopped.is_set():
             if (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
+                print("Timer Finished! Stop Camera!")
                 self.stop(mqtt)
 
             if not self.grabbed:
@@ -141,7 +142,7 @@ class VideoGet:
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] + '/' + str(rpi_id), blob)
+                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + config._configuration_data['location'] '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
@@ -152,7 +153,7 @@ class VideoGet:
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
 
-        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] + '/' + str(rpi_id), blob)
+        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + config._configuration_data['location'] '/' + str(rpi_id), blob)
         self.is_recording = False
         self.stopped.set()
         

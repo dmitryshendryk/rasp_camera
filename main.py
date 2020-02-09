@@ -76,6 +76,7 @@ if __name__ == "__main__":
 
         if config._configuration_data['type'] == 'master':
             if not camera.is_recording:
+                print('Get Movement')
                 camera.is_movement = camera.get_movement()
 
             if camera.is_movement:

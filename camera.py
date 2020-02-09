@@ -133,9 +133,9 @@ class VideoGet:
         
         start = time.time()
         while not stopped.is_set():
-            if time.time() - start > self.config._configuration_data['type']:
+            if (time.time() - start) > int(self.config._configuration_data['type']):
                 self.stop(mqtt)
-                
+
             if not self.grabbed:
                 self.stop(mqtt)
             else:

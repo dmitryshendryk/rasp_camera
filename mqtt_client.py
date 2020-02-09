@@ -128,7 +128,9 @@ class MQTTClient():
                 with open('./cfg/configuration.json','w') as f: 
                     json.dump(self.local_config, f, indent=4) 
                 
-                bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo systemctl restart rpi_camera.service'
+                # bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo systemctl restart rpi_camera.service'
+                # subprocess.call(bashCommand, shell=True)
+                bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
                 subprocess.call(bashCommand, shell=True)
             except ValueError:
                 print('JSON read error')

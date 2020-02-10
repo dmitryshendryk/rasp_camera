@@ -173,7 +173,7 @@ class MQTTClient():
                 print('Create directory')
                 self.ssh_paramiko.mkdir(first_remote_level)
 
-            second_remote_level = remote_path + '/' +  self.local_config['location'] +  '/' + config._configuration_data['location'] + '/' + os.environ['RPI_ID']
+            second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
             
             try:
                 self.ssh_paramiko.chdir(second_remote_level)

@@ -157,7 +157,7 @@ class MQTTClient():
     def upload_video_to_server(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)
         print(msg)
-        print(type self.rpi_id)
+        print(type(self.rpi_id))
         print(self.local_config['type'])
         print(self.local_config['location'])
         if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 

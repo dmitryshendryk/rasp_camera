@@ -33,16 +33,16 @@ class MQTTClient():
             print('Camera not connected __init__')
         
 
-        # self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
-        # self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
         # self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
         # self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)
         # self.mqttc.subscribe("store/prishna/rpi/actions/update/config", qos=1)
 
-        # self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
-        # self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
         # self.mqttc.message_callback_add("store/prishna/rpi/actions/start_video", self.start_video_recording)
         # self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/clear_videos", self.clear_videos)
@@ -83,23 +83,23 @@ class MQTTClient():
     def reboot_rpi(self, mqttc, obj, msg):
         msg = json.loads(msg.payload)
         print(msg)
-        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'reboot RPI'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + config._configuration_data['location'] + '/' + str(self.rpi_id) , blob)
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Reboot RPI'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/', blob)
     
     def shutdown_rpi(self, mqttc, obj, msg):
         msg = json.loads(msg.payload)
-        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'shutdown RPI'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/' + config._configuration_data['location'] + '/' + str(self.rpi_id), blob)
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'ShutDown RPI'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/', blob)
 
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:

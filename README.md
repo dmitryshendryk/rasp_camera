@@ -59,3 +59,17 @@ In parallel they will do prediction and will give geometric mean for the predict
 another approach is to create a base model for the feature extraction and than 
 train model on meta features. Another approach is to add Blending and KFold Split in the dataset.
 All of these features may give boost to accuracy. 
+
+
+
+
+
+
+
+### Upload functionality (videos) to EC2 (update all code the RPIS)   - fast
+### Need to check bugs with starting the videos after detection (master is not stable)  - slow 
+### Set min recodr thresohold to 5 mins for all RPIS      -  fast 
+### Configuration need to be catched when we setup from the UI  - medium 
+### Blinking leds and download and uploading  - medium 
+### Make popup on the setting rpi config 
+### Check the routes for logs and the buttons actions 

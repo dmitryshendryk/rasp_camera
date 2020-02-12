@@ -66,7 +66,7 @@ if __name__ == "__main__":
    
     client.mqttc.loop_start()
 
-    monitor_rpi(rpi_api, client, config)
+    # monitor_rpi(rpi_api, client, config)
     is_movement = False 
     ## options to start as slave or master 
     if args.device_type == 'master':

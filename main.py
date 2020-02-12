@@ -75,7 +75,8 @@ if __name__ == "__main__":
         print('Start RPI as Slave')
 
     while True:
-        pass 
+        print('test')
+        time.sleep(1)
 
     #     if config._configuration_data['type'] == 'master':
     #         if not camera.is_recording:

@@ -193,8 +193,7 @@ class MQTTClient():
     
     def clear_videos(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)
-        print(msg)
-        if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
             print('CLear videos')
             
             local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
@@ -204,6 +203,6 @@ class MQTTClient():
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Clear Videos'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/' + config._configuration_data['location'] +  '/' + str(self.rpi_id), blob)
+            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
 

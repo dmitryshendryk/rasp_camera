@@ -4,6 +4,7 @@ import subprocess
 import os 
 from rpi_paramiko import SftpClient
 import shutil
+import time
 import json
 
 
@@ -87,6 +88,7 @@ class MQTTClient():
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Reboot RPI'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/', blob)
+            time.sleep(1)
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
             subprocess.call(bashCommand, shell=True)
     

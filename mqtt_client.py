@@ -160,38 +160,38 @@ class MQTTClient():
         print(type(self.rpi_id))
         print(self.local_config['type'])
         print(self.local_config['location'])
-        # if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
-        #     local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
-        #     remote_path = '/home/ubuntu/videos/' 
+        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
+            local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
+            remote_path = '/home/ubuntu/videos/' 
             
-        #     first_remote_level = remote_path + self.local_config['location']
+            first_remote_level = remote_path + self.local_config['location']
             
-        #     try:
-        #         self.ssh_paramiko.chdir(first_remote_level)
-        #     except IOError as e:
-        #         print('Directory {0} doesnt exist'.format(first_remote_level))
-        #         print('Create directory')
-        #         self.ssh_paramiko.mkdir(first_remote_level)
+            try:
+                self.ssh_paramiko.chdir(first_remote_level)
+            except IOError as e:
+                print('Directory {0} doesnt exist'.format(first_remote_level))
+                print('Create directory')
+                self.ssh_paramiko.mkdir(first_remote_level)
 
-        #     second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
+            second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
             
-        #     try:
-        #         self.ssh_paramiko.chdir(second_remote_level)
-        #     except IOError as e:
-        #         print('Directory {0} doesnt exist'.format(second_remote_level))
-        #         print('Create directory')
-        #         self.ssh_paramiko.mkdir(second_remote_level)
+            try:
+                self.ssh_paramiko.chdir(second_remote_level)
+            except IOError as e:
+                print('Directory {0} doesnt exist'.format(second_remote_level))
+                print('Create directory')
+                self.ssh_paramiko.mkdir(second_remote_level)
 
-        #     print("Upload videos to server")
-        #     now = datetime.now()
-        #     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        #     blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Video to Server'})
-        #     self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(self.rpi_id), blob)
-        #     self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
-        #     now = datetime.now()
-        #     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        #     blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
-        #     self.publish_message('/logs/rpi/' + self.local_config['type'] + '/' + self.local_config['location'] +  '/' + str(self.rpi_id), blob)
+            print("Upload videos to server")
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Video to Server'})
+            self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(self.rpi_id), blob)
+            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+            # now = datetime.now()
+            # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            # blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+            # self.publish_message('/logs/rpi/' + self.local_config['type'] + '/' + self.local_config['location'] +  '/' + str(self.rpi_id), blob)
     
     def clear_videos(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)

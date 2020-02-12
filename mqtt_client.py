@@ -185,6 +185,8 @@ class MQTTClient():
             try:
                 self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
             except Exception as e:
+                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
+                self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
                 print(e)
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")

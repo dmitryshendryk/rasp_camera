@@ -176,11 +176,3 @@ class VideoGet:
         print("Camera disabled and all output windows closed...")
 
 
-
-### No motion control on slave                                     ((((Done ))))
-### Only master will start videos on slave when movement detected  ((((Done)))), bug when stops the video it starts again
-### setup the recodring time after movement detection 
-### cron for upload all videos and delete them 
-### start and stop recording for both master and slave 
-### Speed of upload                                                 ((((((Done))))))
-### change between shelfs and rpis in control and config

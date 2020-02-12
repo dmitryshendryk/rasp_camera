@@ -51,7 +51,7 @@ class VideoGet:
         self.config._configuration_data = rpi_config._configuration_data
 
 
-    def start(self, mqtt):
+    def start(self, mqtt, is_timer):
         self.is_recording =True
         print('Start video recording')
         if self.stopped.is_set():
@@ -65,7 +65,7 @@ class VideoGet:
         # file_name = video_save_path + '/' + str(now_date) + '.avi'
         file_name = video_save_path + '/' + str(time.time()) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_1920_1080.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (1920,1080))
-        t = Thread(target=self.get, args=(self.stopped, mqtt))
+        t = Thread(target=self.get, args=(self.stopped, mqtt, is_timer))
         t.setDaemon(True)
         t.start()
         now = datetime.now()
@@ -134,14 +134,14 @@ class VideoGet:
             self.first_frame, self.next_frame = None, None 
             return False
 
-    def get(self, stopped, mqtt):
+    def get(self, stopped, mqtt, is_timer):
         blob = {}
         blob['connectionStatus'] = True
         blob = json.dumps(blob)
         
         start = time.time()
         while not stopped.is_set():
-            if (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
+            if is_timer and (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
                 print("Timer Finished! Stop Camera!")
                 self.stop(mqtt)
 

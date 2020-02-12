@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
             if camera.is_movement:
                 camera.is_movement = False
-                camera.start(client)
+                camera.start(client, is_timer=True)
                 blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
                 client.publish_message("store/prishna/rpi/actions/start_video", blob)
                 

@@ -106,7 +106,7 @@ class MQTTClient():
         if self.camera:
             msg = json.loads(msg.payload)
             if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
-                self.camera.start(self)
+                self.camera.start(self,is_timer=False)
                 
         else:
             print('Camera not connected start_video_recording')
@@ -139,7 +139,6 @@ class MQTTClient():
     def stop_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            print(msg)
             if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
                 print('Stop video recording')
                 self.camera.stop(self)

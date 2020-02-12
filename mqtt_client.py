@@ -186,7 +186,7 @@ class MQTTClient():
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Video to Server'})
-            self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(self.rpi_id), blob)
+            # self.publish_message('/logs/rpi/' +  self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(self.rpi_id), blob)
             self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
             # now = datetime.now()
             # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")

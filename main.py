@@ -66,7 +66,7 @@ if __name__ == "__main__":
    
     client.mqttc.loop_start()
 
-    # monitor_rpi(rpi_api, client, config)
+    monitor_rpi(rpi_api, client, config)
     is_movement = False 
     ## options to start as slave or master 
     if args.device_type == 'master':
@@ -75,19 +75,17 @@ if __name__ == "__main__":
         print('Start RPI as Slave')
 
     while True:
-        print('test')
-        time.sleep(1)
 
-    #     if config._configuration_data['type'] == 'master':
-    #         if not camera.is_recording:
-    #             # print('Get Movement')
-    #             camera.is_movement = camera.get_movement()
+        if config._configuration_data['type'] == 'master':
+            if not camera.is_recording:
+                # print('Get Movement')
+                camera.is_movement = camera.get_movement()
 
-    #         if camera.is_movement:
-    #             camera.is_movement = False
-    #             camera.start(client)
-    #             blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
-    #             client.publish_message("store/prishna/rpi/actions/start_video", blob)
+            if camera.is_movement:
+                camera.is_movement = False
+                camera.start(client)
+                blob = json.dumps({'rpi_id': str(rpi_id), 'type': 'slave'})
+                client.publish_message("store/prishna/rpi/actions/start_video", blob)
                 
 
        

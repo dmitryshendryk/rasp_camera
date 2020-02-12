@@ -105,7 +105,7 @@ class MQTTClient():
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+            if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                 self.camera.start(self,is_timer=False)
                 
         else:
@@ -139,13 +139,13 @@ class MQTTClient():
     def stop_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type']:
+            if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                 print('Stop video recording')
                 self.camera.stop(self)
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                 blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Stop Recording Video'})
-                self.publish_message('/logs/rpi/' + self.local_config['type'] + '/' + config._configuration_data['location'] +  '/' + str(self.rpi_id), blob)
+                self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
         else:
             print('Camera not connected stop_video_recording')
             now = datetime.now()

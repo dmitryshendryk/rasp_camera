@@ -151,6 +151,7 @@ class VideoGet:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
                     print('Writting frames')
+                    print(self.frame)
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -158,6 +159,7 @@ class VideoGet:
 
     def stop(self, mqtt):
         # self.stream.release()
+        self.stopped.set()
         blob = {}
         blob['connectionStatus'] = False
         blob = json.dumps(blob)
@@ -168,7 +170,7 @@ class VideoGet:
         mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
         
         self.is_recording = False
-        self.stopped.set()
+        
         
         # self.stopped = True
     def __del__(self):

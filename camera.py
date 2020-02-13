@@ -25,6 +25,8 @@ class VideoGet:
 
     def __init__(self, src=0, rpi_config=None):
         self.stream = cv2.VideoCapture(src)
+        self.stream.set(3,1920)
+        self.stream.set(4,1080)
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
 

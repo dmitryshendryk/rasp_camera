@@ -141,33 +141,31 @@ class VideoGet:
         
         start = time.time()
         while not stopped.is_set():
-            # if is_timer and (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
-            #     print("Timer Finished! Stop Camera!")
-            #     self.stop(mqtt)
+            if is_timer and (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
+                print("Timer Finished! Stop Camera!")
+                self.stop(mqtt)
 
             if not self.grabbed:
                 self.stop(mqtt)
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
-                    print('Writting frames')
-                    print(self.frame)
-                    # mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
 
     def stop(self, mqtt):
-        # self.stream.release()
+
         self.stopped.set()
-        # blob = {}
-        # blob['connectionStatus'] = False
-        # blob = json.dumps(blob)
-        # now = datetime.now()
-        # mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+        blob = {}
+        blob['connectionStatus'] = False
+        blob = json.dumps(blob)
+        now = datetime.now()
+        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
         
-        # blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
-        # mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
+        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
+        mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
         
         # self.is_recording = False
         

@@ -64,7 +64,7 @@ class VideoGet:
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
         file_name = video_save_path + '/' + str(now_date) + '.avi'
         # file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_1920_1080.avi'
-        self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (1920,1080))
+        self.out = cv2.VideoWriter(file_name, fourcc, 20.0, (640,480))
         t = Thread(target=self.get, args=(self.stopped, mqtt, is_timer))
         t.setDaemon(True)
         t.start()

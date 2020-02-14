@@ -24,8 +24,9 @@ class VideoGet:
     """
 
     def __init__(self, src=0, rpi_config=None):
-        self.config._configuration_data = rpi_config._configuration_data
         self.stream = cv2.VideoCapture(src)
+
+        self.config._configuration_data = rpi_config._configuration_data
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH,self.config._configuration_data['resolution']['w'])
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
         if self.stream is None or not self.stream.isOpened():

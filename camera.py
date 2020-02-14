@@ -24,9 +24,10 @@ class VideoGet:
     """
 
     def __init__(self, src=0, rpi_config=None):
+        self.config._configuration_data = rpi_config._configuration_data
         self.stream = cv2.VideoCapture(src)
-        self.stream.set(3,1920)
-        self.stream.set(4,1080)
+        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH,self.config._configuration_data['resolution']['w'])
+        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
 
@@ -50,7 +51,6 @@ class VideoGet:
         # font = cv2.FONT_HERSHEY_SIMPLEX
         self.delay_counter = 0
         self.movement_persistent_counter = 0
-        self.config._configuration_data = rpi_config._configuration_data
 
 
     def start(self, mqtt, is_timer):

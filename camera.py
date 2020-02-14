@@ -25,7 +25,7 @@ class VideoGet:
 
     def __init__(self, src=0, rpi_config=None):
         self.stream = cv2.VideoCapture(src)
-
+        self.config = rpi_config
         self.config._configuration_data = rpi_config._configuration_data
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH,self.config._configuration_data['resolution']['w'])
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
@@ -35,7 +35,6 @@ class VideoGet:
         (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()
-        self.config = rpi_config
         self.FRAMES_TO_PERSIST = 10
 
         self.MIN_SIZE_FOR_MOVEMENT = 2000

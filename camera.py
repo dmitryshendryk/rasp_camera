@@ -132,7 +132,8 @@ class VideoGet:
        
         if self.movement_persistent_flag:
             self.movement_persistent_flag = False
-            # self.first_frame, self.next_frame = [], []
+            frame = self.stream.read()
+            self.first_frame, self.next_frame = frame, frame
             return True
         # if self.movement_persistent_counter > 0:
         #     text = "Movement Detected " + str(self.movement_persistent_counter)

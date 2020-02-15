@@ -195,6 +195,7 @@ class VideoGet:
         mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
         
         self.is_recording = False
+        print('End stop')
         
         
         # self.stopped = True

@@ -109,11 +109,12 @@ class VideoGet:
         self.next_frame = gray
 
         frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
+        print("frame_delta {}".format(frame_delta))
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
         thresh = cv2.dilate(thresh, None, iterations = 2)
         _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+        print("cnts {}".format(cnts))
         for c in cnts:
 
             (x, y, w, h) = cv2.boundingRect(c)
@@ -129,8 +130,6 @@ class VideoGet:
         if self.movement_persistent_counter > 0:
             text = "Movement Detected " + str(self.movement_persistent_counter)
             self.movement_persistent_counter -= 1
-            self.delay_counter = 0
-            self.first_frame, self.next_frame = None, None
             return True
         else:
             text = "No Movement Detected"

@@ -157,7 +157,9 @@ class VideoGet:
                 print('Waiting for a lock in get')
                 self.lock.acquire()
                 try:
+                    print('Inside try')
                     self.stop(mqtt)
+                    print('After try')
                 finally:
                     print('Released a lock in get')
                     self.lock.release()

@@ -155,7 +155,7 @@ class MQTTClient():
                 blob = {}
                 blob['connectionStatus'] = False
                 blob = json.dumps(blob)
-                self.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                self.publish_message("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
         else:
             print('Camera not connected stop_video_recording')
             now = datetime.now()

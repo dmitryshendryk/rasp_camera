@@ -51,7 +51,7 @@ class VideoGet:
         # Init display font and timeout counters
         # font = cv2.FONT_HERSHEY_SIMPLEX
         self.delay_counter = 0
-        self.movement_persistent_counter = 0
+        self.movement_persistent_counter = 100
 
 
     def start(self, mqtt, is_timer):
@@ -136,6 +136,7 @@ class VideoGet:
                 return False 
         else:
             print("Movement detection stopped")
+            self.movement_persistent_counter = 0
             self.first_frame, self.next_frame = None, None 
             return False
 

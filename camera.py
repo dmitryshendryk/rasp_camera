@@ -173,6 +173,7 @@ class VideoGet:
                     blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
                     mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
                     print('Middle stop')
+
                     
 
             if not self.grabbed:

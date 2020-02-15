@@ -151,6 +151,11 @@ class MQTTClient():
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                 blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Stop Recording Video'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+
+                blob = {}
+                blob['connectionStatus'] = False
+                blob = json.dumps(blob)
+                mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
         else:
             print('Camera not connected stop_video_recording')
             now = datetime.now()

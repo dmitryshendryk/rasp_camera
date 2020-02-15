@@ -105,7 +105,6 @@ class MQTTClient():
     def start_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            print(msg)
             
             if type(msg['rpi_id']) != str:
                 if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
@@ -122,13 +121,9 @@ class MQTTClient():
         if self.rpi_id == msg['rpi_id'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['location']: 
             try:
                 with open('./cfg/configuration.json') as f:
-                    print("Writing to file")
                     self.local_config = json.load(f)
-                    print(self.local_config)
-                    print(msg['data'])
                     for key in msg['data']:
                         self.local_config['data'][key] = msg['data'][key]
-                    print(self.local_config)
                 
                 with open('./cfg/configuration.json','w') as f: 
                     json.dump(self.local_config, f, indent=4) 

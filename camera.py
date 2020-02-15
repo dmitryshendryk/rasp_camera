@@ -157,9 +157,7 @@ class VideoGet:
                 print('Waiting for a lock in get')
                 self.lock.acquire()
                 try:
-                    print('Inside try')
                     self.stop(mqtt)
-                    print('After try')
                 finally:
                     print('Released a lock in get')
                     self.lock.release()
@@ -172,7 +170,6 @@ class VideoGet:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
                     mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
-                    print('Middle stop')
 
                     
 
@@ -194,11 +191,9 @@ class VideoGet:
                         break
 
     def stop(self, mqtt):
-        print('Inside stop')
         self.stopped.set()
         
         self.is_recording = False
-        print('End stop')
         
         
         # self.stopped = True

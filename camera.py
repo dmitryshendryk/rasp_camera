@@ -46,7 +46,7 @@ class VideoGet:
         self.next_frame = None
         self.is_recording = False 
         self.is_movement = False
-        self.enable_movement = True
+        self.movement_persistent_flag = False
 
         # Init display font and timeout counters
         # font = cv2.FONT_HERSHEY_SIMPLEX
@@ -124,14 +124,14 @@ class VideoGet:
                 
 
         if transient_movement_flag == True:
-            movement_persistent_flag = True
+            self.movement_persistent_flag = True
             self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
         
         
         print("movement_persistent_counter {}".format(self.movement_persistent_counter))
        
-        if movement_persistent_flag:
-            movement_persistent_flag = False
+        if self.movement_persistent_flag:
+            self.movement_persistent_flag = False
             return True
         # if self.movement_persistent_counter > 0:
         #     text = "Movement Detected " + str(self.movement_persistent_counter)

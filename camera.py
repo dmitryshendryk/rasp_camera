@@ -163,6 +163,16 @@ class VideoGet:
                 finally:
                     print('Released a lock in get')
                     self.lock.release()
+                   
+                    blob = {}
+                    blob['connectionStatus'] = False
+                    blob = json.dumps(blob)
+                    now = datetime.now()
+                    print('Middle stop')
+                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
+                    mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
+                    
 
             if not self.grabbed:
 
@@ -184,15 +194,6 @@ class VideoGet:
     def stop(self, mqtt):
         print('Inside stop')
         self.stopped.set()
-        blob = {}
-        blob['connectionStatus'] = False
-        blob = json.dumps(blob)
-        now = datetime.now()
-        print('Middle stop')
-        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
-        
-        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
-        mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
         
         self.is_recording = False
         print('End stop')

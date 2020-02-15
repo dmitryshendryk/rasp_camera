@@ -182,7 +182,7 @@ class VideoGet:
                         break
 
     def stop(self, mqtt):
-
+        print('Inside stop')
         self.stopped.set()
         blob = {}
         blob['connectionStatus'] = False

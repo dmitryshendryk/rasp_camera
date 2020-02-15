@@ -126,11 +126,17 @@ class VideoGet:
         if transient_movement_flag == True:
             movement_persistent_flag = True
             self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
+        
+        
         print("movement_persistent_counter {}".format(self.movement_persistent_counter))
-        if self.movement_persistent_counter > 0:
-            text = "Movement Detected " + str(self.movement_persistent_counter)
-            self.movement_persistent_counter -= 1
+       
+        if movement_persistent_flag:
+            movement_persistent_flag = False
             return True
+        # if self.movement_persistent_counter > 0:
+        #     text = "Movement Detected " + str(self.movement_persistent_counter)
+        #     self.movement_persistent_counter -= 1
+        #     return True
         else:
             text = "No Movement Detected"
             return False 

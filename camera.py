@@ -129,6 +129,7 @@ class VideoGet:
         if self.movement_persistent_counter > 0:
             text = "Movement Detected " + str(self.movement_persistent_counter)
             self.movement_persistent_counter -= 1
+            self.delay_counter = 0
             self.first_frame, self.next_frame = None, None
             return True
         else:

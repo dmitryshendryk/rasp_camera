@@ -40,7 +40,7 @@ class VideoGet:
 
         self.MIN_SIZE_FOR_MOVEMENT = 2000
 
-        self.MOVEMENT_DETECTED_PERSISTENCE = 100
+        self.MOVEMENT_DETECTED_PERSISTENCE = 1
 
         self.first_frame = None
         self.next_frame = None

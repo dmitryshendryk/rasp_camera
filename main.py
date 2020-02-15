@@ -38,8 +38,6 @@ def monitor_rpi(rpi_api, client, config):
     t.start()
 
 
-
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(

@@ -31,7 +31,8 @@ class VideoGet:
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
-
+        
+        self.lock = threading.Lock()
         (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()
@@ -147,10 +148,24 @@ class VideoGet:
         while not stopped.is_set():
             if is_timer and (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
                 print("Timer Finished! Stop Camera!")
-                self.stop(mqtt)
+                
+                print('Waiting for a lock in get')
+                self.lock.acquire()
+                try:
+                    self.stop(mqtt)
+                finally:
+                    print('Released a lock in get')
+                    self.lock.release()
 
             if not self.grabbed:
-                self.stop(mqtt)
+
+                print('Waiting for a lock in grabbed')
+                self.lock.acquire()
+                try:
+                    self.stop(mqtt)
+                finally:
+                    print('Released a lock in grabbed')
+                    self.lock.release()
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:

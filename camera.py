@@ -109,12 +109,12 @@ class VideoGet:
         self.next_frame = gray
 
         frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
-        print("frame_delta {}".format(frame_delta))
+        # print("frame_delta {}".format(frame_delta))
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
         thresh = cv2.dilate(thresh, None, iterations = 2)
         _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        print("cnts {}".format(cnts))
+        # print("cnts {}".format(cnts))
         for c in cnts:
 
             (x, y, w, h) = cv2.boundingRect(c)
@@ -128,7 +128,7 @@ class VideoGet:
             self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
         
         
-        print("movement_persistent_counter {}".format(self.movement_persistent_counter))
+        # print("movement_persistent_counter {}".format(self.movement_persistent_counter))
        
         if self.movement_persistent_flag:
             self.movement_persistent_flag = False

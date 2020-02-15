@@ -78,6 +78,8 @@ if __name__ == "__main__":
             if not camera.is_recording:
 
                 camera.is_movement = camera.get_movement()
+                print("is_recording {}".format(camera.is_recording))
+                print("is_recording {}".format(camera.is_movement))
 
             if camera.is_movement:
                 camera.is_movement = False

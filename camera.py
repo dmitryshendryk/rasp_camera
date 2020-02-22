@@ -62,13 +62,13 @@ class VideoGet:
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S") ### change name  
         #### <timestamp>_<recordingdate>_<length_in_milliseconds>_<camera_id>_<camera_set_id>_<shop_id>_<compression>_<resolution>.m
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video_save_path = './' + self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
         # file_name = video_save_path + '/' + str(now_date) + '.avi'
         w, h = self.config._configuration_data['resolution']['w'], self.config._configuration_data['resolution']['h']
 
-        file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_' + str(w) +'_'+ str(h) + '.mp4'
+        file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_' + str(w) +'_'+ str(h) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 10, (w, h))
         t = Thread(target=self.get, args=(self.stopped, mqtt, is_timer))
         t.setDaemon(True)

@@ -190,9 +190,9 @@ class VideoGet:
                     # img_np = np.array(self.frame)
                     frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
 
-                    frame_rgb = frame[:900, :]
+                    frame_rgb = frame[:880, :]
 
-                    frame_bgr = cv2.cvtColor(frame[900:, :],  cv2.COLOR_BGR2RGB)
+                    frame_bgr = cv2.cvtColor(frame[880:, :],  cv2.COLOR_BGR2RGB)
 
                     frame = cv2.vconcat([frame_rgb,frame_bgr])
 

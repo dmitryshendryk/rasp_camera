@@ -33,7 +33,7 @@ class VideoGet:
             raise CameraNotConnected()
         
         self.lock = threading.Lock()
-        (self.grabbed, self.frame) = self.stream.read()
+        # (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()
         self.FRAMES_TO_PERSIST = 10
@@ -69,7 +69,7 @@ class VideoGet:
         w, h = self.config._configuration_data['resolution']['w'], self.config._configuration_data['resolution']['h']
 
         file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_' + str(w) +'_'+ str(h) + '.avi'
-        self.out = cv2.VideoWriter(file_name, fourcc, 10, (640, 480))
+        self.out = cv2.VideoWriter(file_name, fourcc, 10, (w, h))
         t = Thread(target=self.get, args=(self.stopped, mqtt, is_timer))
         t.setDaemon(True)
         t.start()

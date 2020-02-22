@@ -17,7 +17,7 @@ class CronUploader():
     def __init__(self, rpi_config):
         self.ssh_paramiko = SftpClient()
         self.mqttc = mqtt.Client()
-
+        self.local_config = rpi_config._configuration_data 
         self.mqttc.username_pw_set(rpi_config.MQTT_USER, rpi_config.MQTT_PASS)
         self.mqttc.on_message = self.on_message
         self.mqttc.on_connect = self.on_connect

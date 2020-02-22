@@ -68,7 +68,7 @@ class VideoGet:
         # file_name = video_save_path + '/' + str(now_date) + '.avi'
         w, h = self.config._configuration_data['resolution']['w'], self.config._configuration_data['resolution']['h']
 
-        file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_' + str(w) +'_'+ str(h) + '.mjpg'
+        file_name = video_save_path + '/' + str(int(time.time())) + '_' + str(now_date) + '_' + os.environ['RPI_ID'] + '_' + self.config._configuration_data['type'] + '_' + self.config._configuration_data['location'] + '_H264_' + str(w) +'_'+ str(h) + '.avi'
         self.out = cv2.VideoWriter(file_name, fourcc, 10, (w, h))
         t = Thread(target=self.get, args=(self.stopped, mqtt, is_timer))
         t.setDaemon(True)
@@ -185,7 +185,8 @@ class VideoGet:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
-                    frame = cv2.cvtColor(self.frame, cv2.COLOR_RGB2BGR)
+                    img_np = np.array(self.frame)
+                    frame = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
                     self.out.write(frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):

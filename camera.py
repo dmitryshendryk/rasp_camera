@@ -24,11 +24,13 @@ class VideoGet:
     """
 
     def __init__(self, src=0, rpi_config=None):
-        self.stream = cv2.VideoCapture(src)
+        self.stream = cv2.VideoCapture(src, cv2.CAP_V4L2)
         self.config = rpi_config
         self.config._configuration_data = rpi_config._configuration_data
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH,self.config._configuration_data['resolution']['w'])
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
+        self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'XVID'))
+
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
         

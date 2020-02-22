@@ -78,6 +78,9 @@ class CronUploader():
         try:
             self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
             print("Cron Upload Finished")
+            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Upload Finished'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+            
         except Exception as e:
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)

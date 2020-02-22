@@ -1,5 +1,5 @@
 
-
+import schedule
 
 from rpi_paramiko import SftpClient
 import paho.mqtt.client as mqtt
@@ -8,6 +8,7 @@ from config import Config
 import datetime
 import os 
 import json
+import time 
 
 ROOT_DIR = os.path.abspath('./')
 
@@ -92,6 +93,11 @@ if __name__ == "__main__":
 
     rpi_config = Config()
 
-    cron = CronUploader(rpi_config)
+    c = CronUploader(rpi_config)
 
-    cron.upload()
+    schedule.every(1).minutes.do(c.upload)
+
+
+    while 1:
+        schedule.run_pending()
+        time.sleep(1)

@@ -23,6 +23,7 @@ class CronUploader():
         self.mqttc.on_connect = self.on_connect
         self.mqttc.on_publish = self.on_publish
         self.mqttc.connect(rpi_config.MQTT_HOST, rpi_config.MQTT_PORT, rpi_config.MQTT_KEEP_ALIVE)
+        self.rpi_id = os.environ['RPI_ID']
 
     def on_connect(self, mqttc, obj, flags, rc):
         print("rc: " + str(rc))

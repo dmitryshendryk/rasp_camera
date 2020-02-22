@@ -80,7 +80,7 @@ class CronUploader():
             print("Cron Upload Finished")
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Upload Finished'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-            
+
         except Exception as e:
             blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 
     c = CronUploader(rpi_config)
 
-    schedule.every(1).minutes.do(c.upload)
-
+    print(c.local_config)
+    schedule.every().day.at("00:00").do(c.upload)
 
     while 1:
         schedule.run_pending()

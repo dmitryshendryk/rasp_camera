@@ -188,8 +188,11 @@ class VideoGet:
                 if self.grabbed:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     # img_np = np.array(self.frame)
-                    # frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
-                    self.out.write(self.frame)
+                    frame_bgr = cv2.cvtColor(self.frame[0:800, :],  cv2.COLOR_BGR2RGB)
+                    frame_rgb = self.frame[800:, :]
+                    frame = cv2.vconcat([frame_bgr,frame_rgb])
+
+                    self.out.write(frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

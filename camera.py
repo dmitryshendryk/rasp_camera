@@ -185,7 +185,9 @@ class VideoGet:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
-                    self.out.write(self.frame)
+                    frame = cv2.cvtColor(self.frame, cv2.COLOR_RGB2BGR)
+                    self.out.write(frame)
+
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
 

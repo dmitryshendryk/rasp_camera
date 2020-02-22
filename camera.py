@@ -188,9 +188,13 @@ class VideoGet:
                 if self.grabbed:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     # img_np = np.array(self.frame)
-                    frame_bgr = cv2.cvtColor(self.frame[0:800, :],  cv2.COLOR_BGR2RGB)
-                    frame_rgb = self.frame[800:, :]
-                    frame = cv2.vconcat([frame_bgr,frame_rgb])
+                    frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
+
+                    frame_rgb = frame[:900, :]
+
+                    frame_bgr = cv2.cvtColor(frame[900:, :],  cv2.COLOR_BGR2RGB)
+
+                    frame = cv2.vconcat([frame_rgb,frame_bgr])
 
                     self.out.write(frame)
 

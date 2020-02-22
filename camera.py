@@ -33,7 +33,7 @@ class VideoGet:
             raise CameraNotConnected()
         
         self.lock = threading.Lock()
-        # (self.grabbed, self.frame) = self.stream.read()
+        (self.grabbed, self.frame) = self.stream.read()
         # self.stopped = False
         self.stopped= threading.Event()
         self.FRAMES_TO_PERSIST = 10

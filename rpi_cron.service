@@ -1,0 +1,16 @@
+[Unit]
+Description=RPI Cron
+After=NetworkManager.service
+
+[Service]
+Environment="RPI_ID=3"
+Environment="RPI_PASS=node_3"
+WorkingDirectory=/home/rasp3/Documents/rasp_camera
+Type=simple
+User=rasp3
+Group=rasp3
+ExecStart=python3 cron_uploader.py
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

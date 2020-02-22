@@ -100,8 +100,9 @@ if __name__ == "__main__":
 
     c = CronUploader(rpi_config)
 
-    print(c.local_config)
-    schedule.every().day.at("00:00").do(c.upload)
+    print(c.local_config['data']['time_erase_local_files'])
+    time_upload = c.local_config['data']['time_erase_local_files']
+    schedule.every().day.at(time_upload).do(c.upload)
 
     while 1:
         schedule.run_pending()

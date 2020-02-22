@@ -73,15 +73,16 @@ if __name__ == "__main__":
         print('Start RPI as Slave')
 
     while True:
+        pass
 
-        if config._configuration_data['type'] == 'master':
-            if not camera.is_recording:
+        # if config._configuration_data['type'] == 'master':
+        #     if not camera.is_recording:
 
-                camera.is_movement = camera.get_movement()
+        #         camera.is_movement = camera.get_movement()
 
-            if camera.is_movement:
-                camera.is_movement = False
-                camera.start(client, is_timer=True)
-                blob = json.dumps({'rpi_id': {'rpis': str(rpi_id), 'region': config._configuration_data['location']}, 'type': 'slave', 'is_timer': True})
-                client.publish_message("store/prishna/rpi/actions/start_video", blob)
+        #     if camera.is_movement:
+        #         camera.is_movement = False
+        #         camera.start(client, is_timer=True)
+        #         blob = json.dumps({'rpi_id': {'rpis': str(rpi_id), 'region': config._configuration_data['location']}, 'type': 'slave', 'is_timer': True})
+        #         client.publish_message("store/prishna/rpi/actions/start_video", blob)
                 

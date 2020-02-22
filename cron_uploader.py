@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 from config import Config
 
 from datetime import datetime
+from utils import *
 import os 
 import json
 import time 
@@ -96,6 +97,13 @@ class CronUploader():
 
 if __name__ == "__main__":
 
+    
+    while not internet():
+        print('Waiting for internet connection')
+        time.sleep(10)
+
+    print('Connected to internet!')
+    
     rpi_config = Config()
 
     c = CronUploader(rpi_config)

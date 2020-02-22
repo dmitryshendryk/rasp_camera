@@ -186,8 +186,8 @@ class VideoGet:
                 if self.grabbed:
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     self.out.write(self.frame)
-                    # if cv2.waitKey(1) & 0xFF == ord('q'):
-                    #     break
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
 
     def stop(self, mqtt):
         self.stopped.set()

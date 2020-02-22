@@ -40,7 +40,7 @@ class MQTTClient():
         self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)
-        # self.mqttc.subscribe("store/prishna/rpi/actions/update/config", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/update/config", qos=1)
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
@@ -48,7 +48,7 @@ class MQTTClient():
         self.mqttc.message_callback_add("store/prishna/rpi/actions/stop_video", self.stop_video_recording)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/clear_videos", self.clear_videos)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/upload_videos", self.upload_video_to_server)
-        # self.mqttc.message_callback_add("store/prishna/rpi/actions/update/config", self.update_rpi_config)
+        self.mqttc.message_callback_add("store/prishna/rpi/actions/update/config", self.update_rpi_config)
 
 
     def on_connect(self, mqttc, obj, flags, rc):

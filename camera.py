@@ -25,11 +25,13 @@ class VideoGet:
 
     def __init__(self, src=0, rpi_config=None):
         self.stream = cv2.VideoCapture(src)
+
         self.config = rpi_config
         self.config._configuration_data = rpi_config._configuration_data
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH,self.config._configuration_data['resolution']['w'])
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT,self.config._configuration_data['resolution']['h'])
-        self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'XVID'))
+        self.stream.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
+
 
         if self.stream is None or not self.stream.isOpened():
             raise CameraNotConnected()
@@ -64,7 +66,7 @@ class VideoGet:
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S") ### change name  
         #### <timestamp>_<recordingdate>_<length_in_milliseconds>_<camera_id>_<camera_set_id>_<shop_id>_<compression>_<resolution>.m
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.VideoWriter_fourcc('M','J','P','G')
         video_save_path = './' + self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']
         pathlib.Path(video_save_path).mkdir(parents=True, exist_ok=True) 
         # file_name = video_save_path + '/' + str(now_date) + '.avi'

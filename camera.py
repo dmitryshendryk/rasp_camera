@@ -146,7 +146,7 @@ class VideoGet:
         blob = json.dumps(blob)
         
         start = time.time()
-        while not stopped.is_set():
+        while not stopped.is_set() and self.is_recording:
             if is_timer and (time.time() - start) > int(self.config._configuration_data['data']['record_threshold']):
                 print("Timer Finished! Stop Camera!")
                 
@@ -193,9 +193,10 @@ class VideoGet:
                         break
 
     def stop(self, mqtt):
+        self.is_recording = False
+
         self.stopped.set()
         
-        self.is_recording = False
         
         
         # self.stopped = True

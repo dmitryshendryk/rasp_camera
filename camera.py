@@ -156,7 +156,7 @@ class VideoGet:
                 finally:
                     print('Released a lock in get')
                     self.lock.release()
-                    time.sleep(1)
+                    
                     blob = {}
                     blob['connectionStatus'] = False
                     blob = json.dumps(blob)
@@ -177,7 +177,6 @@ class VideoGet:
                 finally:
                     print('Released a lock in grabbed')
                     self.lock.release()
-                    time.sleep(1)
             else:
                 (self.grabbed, self.frame) = self.stream.read()
                 if self.grabbed:

@@ -8,7 +8,7 @@ from io import StringIO
 import os 
 logging.basicConfig(format='%(levelname)s : %(message)s',
                     level=logging.INFO)
-
+import json
 
 class SftpClient:
 
@@ -87,17 +87,24 @@ class SftpClient:
         except IOError:
             raise 
 
-    def put_dir(self, source, target):
+    def put_dir(self, source, target, mqtt):
         ''' Uploads the contents of the source directory to the target path. The
             target directory needs to exists. All subdirectories in source are 
             created under target.
         '''
+        blob = {}
+        blob['connectionStatus'] = True
         for item in os.listdir(source):
+            blob['connectionStatus'] = True
+            mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
+
             if os.path.isfile(os.path.join(source, item)):
                 self._connection.put(os.path.join(source, item), '%s/%s' % (target, item))
             else:
                 self._connection.mkdir('%s/%s' % (target, item), ignore_existing=True)
                 self._connection.put_dir(os.path.join(source, item), '%s/%s' % (target, item))
-
+            
+            blob['connectionStatus'] = False
+            mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
 
 # ssh_client = SftpClient()

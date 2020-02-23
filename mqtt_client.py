@@ -195,14 +195,14 @@ class MQTTClient():
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                 blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
-                self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+                mqttc.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
                 no_file = False
                 try:
                     blob = {}
                     blob['connectionStatus'] = True
                     blob = json.dumps(blob)
-                    self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    mqttc.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     
                     self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
 
@@ -210,7 +210,7 @@ class MQTTClient():
                     blob['connectionStatus'] = False
                     blob = json.dumps(blob)
 
-                    self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    mqttc.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                     print("Finished upload videos to server")
                 except Exception as e:
                     blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})

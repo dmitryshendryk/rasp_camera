@@ -110,6 +110,7 @@ class MQTTClient():
                 print(msg)
                 if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] in msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                     if not self.camera.is_recording:
+                        print('is_timer' in msg)
                         if 'is_timer' in msg:
                             if msg['is_timer']:
                                 self.camera.start(self,is_timer=True)

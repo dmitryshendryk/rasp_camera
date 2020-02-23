@@ -110,7 +110,6 @@ class VideoGet:
         self.next_frame = gray
 
         frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
-        print(frame_delta)
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
         thresh = cv2.dilate(thresh, None, iterations = 2)

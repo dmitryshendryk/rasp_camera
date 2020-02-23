@@ -177,7 +177,18 @@ class MQTTClient():
             second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
             
             try:
+                blob = {}
+                blob['connectionStatus'] = True
+                blob = json.dumps(blob)
+
+                mqtt.mqttc.publish("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                 self.ssh_paramiko.chdir(second_remote_level)
+
+                blob = {}
+                blob['connectionStatus'] = False
+                blob = json.dumps(blob)
+
+                mqtt.mqttc.publish("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
             except IOError as e:
                 print('Directory {0} doesnt exist'.format(second_remote_level))
                 print('Create directory')

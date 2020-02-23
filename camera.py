@@ -130,7 +130,7 @@ class VideoGet:
        
         if self.movement_persistent_flag:
             self.movement_persistent_flag = False
-            # self.first_frame, self.next_frame = None, None
+            self.first_frame, self.next_frame = None, None
             self.delay_counter = 0
             return True
         

@@ -41,6 +41,7 @@ class MQTTClient():
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/update/config", qos=1)
+        
 
         self.mqttc.message_callback_add("store/prishna/rpi/actions/reboot", self.reboot_rpi)
         self.mqttc.message_callback_add("store/prishna/rpi/actions/shutdown", self.shutdown_rpi)
@@ -177,18 +178,10 @@ class MQTTClient():
             second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
             
             try:
-                blob = {}
-                blob['connectionStatus'] = True
-                blob = json.dumps(blob)
-
-                mqtt.mqttc.publish("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+               
                 self.ssh_paramiko.chdir(second_remote_level)
 
-                blob = {}
-                blob['connectionStatus'] = False
-                blob = json.dumps(blob)
-
-                mqtt.mqttc.publish("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                
             except IOError as e:
                 print('Directory {0} doesnt exist'.format(second_remote_level))
                 print('Create directory')
@@ -202,7 +195,18 @@ class MQTTClient():
 
             no_file = False
             try:
+                blob = {}
+                blob['connectionStatus'] = True
+                blob = json.dumps(blob)
+                self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                
                 self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+
+                blob = {}
+                blob['connectionStatus'] = False
+                blob = json.dumps(blob)
+
+                self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
                 print("Finished upload videos to server")
             except Exception as e:
                 blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})

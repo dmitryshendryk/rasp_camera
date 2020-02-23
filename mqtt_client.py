@@ -7,6 +7,8 @@ import shutil
 import time
 import json
 
+import threading
+
 
 from error import CameraNotConnected
 from datetime import datetime
@@ -161,64 +163,70 @@ class MQTTClient():
             self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.local_config['location'] + '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
 
     def upload_video_to_server(self,mqttc, obj, msg):
-        msg = json.loads(msg.payload)
-        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
-            local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
-            remote_path = '/home/ubuntu/videos/' 
-            
-            first_remote_level = remote_path + self.local_config['location']
-            
-            try:
-                self.ssh_paramiko.chdir(first_remote_level)
-            except IOError as e:
-                print('Directory {0} doesnt exist'.format(first_remote_level))
-                print('Create directory')
-                self.ssh_paramiko.mkdir(first_remote_level)
-
-            second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
-            
-            try:
-               
-                self.ssh_paramiko.chdir(second_remote_level)
-
+        
+        def upload(mqttc, obj, msg):
+            msg = json.loads(msg.payload)
+            if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
+                local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
+                remote_path = '/home/ubuntu/videos/' 
                 
-            except IOError as e:
-                print('Directory {0} doesnt exist'.format(second_remote_level))
-                print('Create directory')
-                self.ssh_paramiko.mkdir(second_remote_level)
-
-            print("Upload videos to server")
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-
-            no_file = False
-            try:
-                blob = {}
-                blob['connectionStatus'] = True
-                blob = json.dumps(blob)
-                self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                first_remote_level = remote_path + self.local_config['location']
                 
-                self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+                try:
+                    self.ssh_paramiko.chdir(first_remote_level)
+                except IOError as e:
+                    print('Directory {0} doesnt exist'.format(first_remote_level))
+                    print('Create directory')
+                    self.ssh_paramiko.mkdir(first_remote_level)
 
-                blob = {}
-                blob['connectionStatus'] = False
-                blob = json.dumps(blob)
+                second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
+                
+                try:
+                
+                    self.ssh_paramiko.chdir(second_remote_level)
 
-                self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
-                print("Finished upload videos to server")
-            except Exception as e:
-                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
-                self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-                no_file = True 
-                print(e)
-            if not no_file:
+                    
+                except IOError as e:
+                    print('Directory {0} doesnt exist'.format(second_remote_level))
+                    print('Create directory')
+                    self.ssh_paramiko.mkdir(second_remote_level)
+
+                print("Upload videos to server")
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
+                no_file = False
+                try:
+                    blob = {}
+                    blob['connectionStatus'] = True
+                    blob = json.dumps(blob)
+                    self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    
+                    self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
+
+                    blob = {}
+                    blob['connectionStatus'] = False
+                    blob = json.dumps(blob)
+
+                    self.publish_message("/camera/uploading/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    print("Finished upload videos to server")
+                except Exception as e:
+                    blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
+                    self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+                    no_file = True 
+                    print(e)
+                if not no_file:
+                    now = datetime.now()
+                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+                    self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+
+        t = threading.Thread(name='child procs', target=upload, args=(mqttc, obj, msg))
+        t.setDaemon(True)
+        t.start()
+        
     def clear_videos(self,mqttc, obj, msg):
         msg = json.loads(msg.payload)
         if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 

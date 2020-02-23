@@ -202,7 +202,7 @@ class MQTTClient():
                     blob = {}
                     blob['connectionStatus'] = True
                     blob = json.dumps(blob)
-                    self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(rpi_id), blob)
+                    self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, blob)
                     
                     self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
 
@@ -210,7 +210,7 @@ class MQTTClient():
                     blob['connectionStatus'] = False
                     blob = json.dumps(blob)
 
-                    self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + str(rpi_id), blob)
+                    self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, blob)
                     print("Finished upload videos to server")
                 except Exception as e:
                     blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})

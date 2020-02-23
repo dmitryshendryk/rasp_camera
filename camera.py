@@ -117,6 +117,7 @@ class VideoGet:
         for c in cnts:
 
             (x, y, w, h) = cv2.boundingRect(c)
+            print(cv2.contourArea(c))
             if cv2.contourArea(c) > self.MIN_SIZE_FOR_MOVEMENT:
                 transient_movement_flag = True
                 

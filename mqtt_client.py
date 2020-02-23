@@ -131,7 +131,8 @@ class MQTTClient():
                 with open('./cfg/configuration.json') as f:
                     self.local_config = json.load(f)
                     for key in msg['data']:
-                        self.local_config['data'][key] = msg['data'][key]
+                        if msg['data'][key]:
+                            self.local_config['data'][key] = msg['data'][key]
                 
                 with open('./cfg/configuration.json','w') as f: 
                     json.dump(self.local_config, f, indent=4) 

@@ -36,7 +36,7 @@ class MQTTClient():
 
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
-        self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/start_video")
         self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)

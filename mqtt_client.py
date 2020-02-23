@@ -108,7 +108,7 @@ class MQTTClient():
             
             if type(msg['rpi_id']) != str:
                 print(msg)
-                if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
+                if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] in msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                     if not self.camera.is_recording:
                         if 'is_timer' in msg:
                             if msg['is_timer']:

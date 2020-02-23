@@ -60,8 +60,9 @@ class VideoGet:
     def start(self, mqtt, is_timer):
         self.is_recording =True
         print('Start video recording')
-        if self.stopped.is_set():
-            self.stopped.clear()
+        # if self.stopped.is_set():
+            # self.stopped.clear()
+        self.stopped = threading.Event()
         now = datetime.now()
         now_date = now.strftime("%d_%m_%Y__%H_%M_%S") ### change name  
         #### <timestamp>_<recordingdate>_<length_in_milliseconds>_<camera_id>_<camera_set_id>_<shop_id>_<compression>_<resolution>.m

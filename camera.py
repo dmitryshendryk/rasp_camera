@@ -90,7 +90,6 @@ class VideoGet:
         ret, frame = self.stream.read()
         text = "Unoccupied"
 
-        # If there's an error in capturing
         if not ret:
             print("CAPTURE ERROR")
 
@@ -111,12 +110,10 @@ class VideoGet:
         self.next_frame = gray
 
         frame_delta = cv2.absdiff(self.first_frame, self.next_frame)
-        # print("frame_delta {}".format(frame_delta))
         thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
 
         thresh = cv2.dilate(thresh, None, iterations = 2)
         _, cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # print("cnts {}".format(cnts))
         for c in cnts:
 
             (x, y, w, h) = cv2.boundingRect(c)
@@ -129,17 +126,13 @@ class VideoGet:
             self.movement_persistent_counter = self.MOVEMENT_DETECTED_PERSISTENCE
         
         
-        # print("movement_persistent_counter {}".format(self.movement_persistent_counter))
        
         if self.movement_persistent_flag:
             self.movement_persistent_flag = False
             self.first_frame, self.next_frame = None, None
             self.delay_counter = 0
             return True
-        # if self.movement_persistent_counter > 0:
-        #     text = "Movement Detected " + str(self.movement_persistent_counter)
-        #     self.movement_persistent_counter -= 1
-        #     return True
+        
         else:
             text = "No Movement Detected"
             return False 

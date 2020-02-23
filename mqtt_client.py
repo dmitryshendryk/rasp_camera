@@ -140,7 +140,7 @@ class MQTTClient():
     def stop_video_recording(self, mqttc, obj, msg):
         if self.camera:
             msg = json.loads(msg.payload)
-            if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
+            if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] in msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                 print('Stop video recording')
                 self.camera.stop(self)
                 now = datetime.now()

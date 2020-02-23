@@ -11,6 +11,8 @@ import os
 import json
 import time 
 
+import shutil
+
 ROOT_DIR = os.path.abspath('./')
 
 class CronUploader():
@@ -46,6 +48,18 @@ class CronUploader():
     def publish_message(self, topic, blob):
         result, mid = self.mqttc.publish(topic, blob, qos=0, retain=True)
         return result, mid
+
+    def erase_files(self):
+        print('Clear videos')
+        
+        local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
+        if os.path.exists(local_path) and os.path.isdir(local_path):
+            shutil.rmtree(local_path + '/')
+        
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Clear Videos'})
+        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
     def upload(self):
         local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
@@ -108,9 +122,11 @@ if __name__ == "__main__":
 
     c = CronUploader(rpi_config)
 
-    print(c.local_config['data']['time_erase_local_files'])
-    time_upload = c.local_config['data']['time_erase_local_files']
+    erase_time = c.local_config['data']['erase_time']
+    time_upload = c.local_config['data']['daily_upload_time']
+
     schedule.every().day.at(time_upload).do(c.upload)
+    schedule.every().day.at(erase_time).do(c.erase_files)
 
     while 1:
         schedule.run_pending()

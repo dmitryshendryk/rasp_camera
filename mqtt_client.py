@@ -89,7 +89,7 @@ class MQTTClient():
         if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Reboot RPI'})
+            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Reboot RPI'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/', blob)
             time.sleep(1)
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S reboot'
@@ -100,7 +100,7 @@ class MQTTClient():
         if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'ShutDown RPI'})
+            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'ShutDown RPI'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] +  '/', blob)
             bashCommand = 'echo ' + os.environ['RPI_PASS'] + ' | sudo -S shutdown -h now'
             subprocess.call(bashCommand, shell=True)
@@ -149,7 +149,7 @@ class MQTTClient():
                 self.camera.stop(self)
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Stop Recording Video'})
+                blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Stop Recording Video'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
                 blob = {}
@@ -160,7 +160,7 @@ class MQTTClient():
             print('Camera not connected stop_video_recording')
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Camera Not Connected'})
+            blob = json.dumps({'time':  str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Camera Not Connected'})
             self.publish_message('/logs/rpi/' + + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.local_config['location'] + '/' + str(self.rpi_id), {'time': now, 'log': 'Camera Not Connected'})
 
     def upload_video_to_server(self,mqttc, obj, msg):
@@ -195,7 +195,7 @@ class MQTTClient():
                 print("Upload videos to server")
                 now = datetime.now()
                 date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
+                blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
                 self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
                 no_file = False
@@ -214,14 +214,14 @@ class MQTTClient():
                     # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, blob)
                     print("Finished upload videos to server")
                 except Exception as e:
-                    blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
+                    blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
                     self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
                     no_file = True 
                     print(e)
                 if not no_file:
                     now = datetime.now()
                     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+                    blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
                     self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
         t = threading.Thread(name='child procs', target=upload, args=(self, mqttc, obj, msg))

@@ -79,7 +79,7 @@ class VideoGet:
         t.start()
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Start Recording Video'})
+        blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Start Recording Video'})
         mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' + str(rpi_id), blob)
         
         return self
@@ -165,7 +165,7 @@ class VideoGet:
                     now = datetime.now()
                     
                     mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
-                    blob = json.dumps({'time': str(now), 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
+                    blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
                     mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
 
                     

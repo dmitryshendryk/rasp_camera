@@ -188,7 +188,7 @@ class VideoGet:
                     frame_rgb = frame[:896, :]
                     frame_bgr = cv2.cvtColor(frame[896:, :],  cv2.COLOR_BGR2RGB)
                     frame = cv2.vconcat([frame_rgb,frame_bgr])
-                    self.out.write(self.frame)
+                    self.out.write(frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break

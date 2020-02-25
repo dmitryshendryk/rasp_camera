@@ -18,7 +18,7 @@ ROOT_DIR = os.path.abspath('./')
 class MQTTClient():
 
     def __init__(self, camera_obj, rpi_config=None):
-        self.ssh_paramiko = SftpClient()
+        
         # self.config = Config()
         self.local_config = rpi_config._configuration_data 
         self.mqttc = mqtt.Client()
@@ -165,7 +165,10 @@ class MQTTClient():
 
     def upload_video_to_server(self,mqttc, obj, msg):
         
-        def upload(self, mqttc, obj, msg):
+        ssh_paramiko = SftpClient()
+        
+        
+        def upload(self, ssh_paramiko, mqttc, obj, msg):
             msg = json.loads(msg.payload)
             if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
                 local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
@@ -174,23 +177,23 @@ class MQTTClient():
                 first_remote_level = remote_path + self.local_config['location']
                 
                 try:
-                    self.ssh_paramiko.chdir(first_remote_level)
+                    ssh_paramiko.chdir(first_remote_level)
                 except IOError as e:
                     print('Directory {0} doesnt exist'.format(first_remote_level))
                     print('Create directory')
-                    self.ssh_paramiko.mkdir(first_remote_level)
+                    ssh_paramiko.mkdir(first_remote_level)
 
                 second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
                 
                 try:
                 
-                    self.ssh_paramiko.chdir(second_remote_level)
+                    ssh_paramiko.chdir(second_remote_level)
 
                     
                 except IOError as e:
                     print('Directory {0} doesnt exist'.format(second_remote_level))
                     print('Create directory')
-                    self.ssh_paramiko.mkdir(second_remote_level)
+                    ssh_paramiko.mkdir(second_remote_level)
 
                 print("Upload videos to server")
                 now = datetime.now()
@@ -205,7 +208,7 @@ class MQTTClient():
                     # blob = json.dumps(blob)
                     # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, blob)
                     
-                    self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level, self)
+                    ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level, self)
 
                     # blob = {}
                     # blob['connectionStatus'] = False
@@ -223,8 +226,11 @@ class MQTTClient():
                     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
                     blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
                     self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+                
+                if ssh_paramiko:
+                    ssh_paramiko.close()
 
-        t = threading.Thread(name='child procs', target=upload, args=(self, mqttc, obj, msg))
+        t = threading.Thread(name='child procs', target=upload, args=(self, ssh_paramiko, mqttc, obj, msg))
         t.setDaemon(True)
         t.start()
         

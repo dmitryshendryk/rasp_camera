@@ -20,3 +20,6 @@ class Config:
     SSH_KEY_PATH = './s3_id_rsa'
     HOST_USERNAME = 'ubuntu'
     SSH_PORT = 2222
+    aws_access_key_id='AKIAU5EBQB3PL4TG6IJL'
+    aws_secret_access_key='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'
+    s3_bucket_name = 'openlens-production'

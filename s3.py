@@ -37,6 +37,28 @@ class S3Handler():
     def create_folder(self, path):
         self.s3_client.put_object(Bucket=self.configuration.s3_bucket_name, Key=(path +'/'))
 
+    def upload_file_cron(self):
+    
+        print("Start uploading to S3")
+        location = self.configuration._configuration_data['location']
+        
+        files, dirs = self.get_files_path(location)
+        
+        for d in dirs:
+            if not self.is_folder_exist(d):
+                
+                print('Create folder {}'.format(d))
+                self.create_folder(d)
+            else:
+                print("{} is exists".format(d))
+
+
+        for file_name in files:
+            with open(file_name, "rb") as f:
+                self.s3_client.upload_fileobj(f, "openlens-production", file_name)
+                
+        print("Finished uploading to S3")
+
     def upload_file(self, mqtt):
     
         print("Start uploading to S3")

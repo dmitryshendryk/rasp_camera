@@ -1,7 +1,7 @@
 
 import schedule
 
-from rpi_paramiko import SftpClient
+from s3 import S3Handler
 import paho.mqtt.client as mqtt
 from config import Config
 
@@ -18,7 +18,7 @@ ROOT_DIR = os.path.abspath('./')
 class CronUploader():
 
     def __init__(self, rpi_config):
-        self.ssh_paramiko = SftpClient()
+        self.s3 = S3Handler()
         self.mqttc = mqtt.Client()
         self.local_config = rpi_config._configuration_data 
         self.mqttc.username_pw_set(rpi_config.MQTT_USER, rpi_config.MQTT_PASS)
@@ -56,56 +56,10 @@ class CronUploader():
         if os.path.exists(local_path) and os.path.isdir(local_path):
             shutil.rmtree(local_path + '/')
         
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Clear Videos'})
-        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
     def upload(self):
-        local_path = self.local_config['location'] + '/' + os.environ['RPI_ID']
-        remote_path = '/home/ubuntu/videos/' 
+        self.s3.upload_file_cron()
         
-        first_remote_level = remote_path + self.local_config['location']
-        
-        try:
-            self.ssh_paramiko.chdir(first_remote_level)
-        except IOError as e:
-            print('Directory {0} doesnt exist'.format(first_remote_level))
-            print('Create directory')
-            self.ssh_paramiko.mkdir(first_remote_level)
-
-        second_remote_level = remote_path + '/' +  self.local_config['location'] + '/' + os.environ['RPI_ID']
-        
-        try:
-            self.ssh_paramiko.chdir(second_remote_level)
-        except IOError as e:
-            print('Directory {0} doesnt exist'.format(second_remote_level))
-            print('Create directory')
-            self.ssh_paramiko.mkdir(second_remote_level)
-
-        print("Cron Upload videos to server")
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron starts upload files'})
-        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-
-        no_file = False
-        try:
-            self.ssh_paramiko.put_dir(ROOT_DIR + '/' + local_path, second_remote_level)
-            print("Cron Upload Finished")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Upload Finished'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-
-        except Exception as e:
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'No files to upload'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-            no_file = True 
-            print(e)
-        if not no_file:
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Upload Finished'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
 
 

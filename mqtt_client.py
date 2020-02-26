@@ -168,29 +168,33 @@ class MQTTClient():
     def upload_video_to_s3(self, mqttc, obj, msg):
 
         s3_client = S3Handler()
+        def upload(self, s3_client, mqttc, obj, msg):
+            blob = {}
+            blob['connectionStatus'] = True
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+
+            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+
+            blob = {}
+            blob['connectionStatus'] = True
+            self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
+            
+            s3_client.upload_file()
+
+            blob = {}
+            blob['connectionStatus'] = False
+            self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
+
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
         
-        blob = {}
-        blob['connectionStatus'] = True
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-
-        blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
-        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
-
-        blob = {}
-        blob['connectionStatus'] = True
-        self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
-        
-        s3_client.upload_file()
-
-        blob = {}
-        blob['connectionStatus'] = False
-        self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
-
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-        blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
-        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+        t = threading.Thread(name='child procs', target=upload, args=(self, s3_client, mqttc, obj, msg))
+        t.setDaemon(True)
+        t.start()
 
     def upload_video_to_server(self,mqttc, obj, msg):
         

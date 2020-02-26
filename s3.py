@@ -3,7 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 import os
 from config import Config
-
+import json
 
 
 class S3Handler():
@@ -37,7 +37,7 @@ class S3Handler():
     def create_folder(self, path):
         self.s3_client.put_object(Bucket=self.configuration.s3_bucket_name, Key=(path +'/'))
 
-    def upload_file(self):
+    def upload_file(self, mqtt):
     
         print("Start uploading to S3")
         location = self.configuration._configuration_data['location']
@@ -46,6 +46,7 @@ class S3Handler():
         
         for d in dirs:
             if not self.is_folder_exist(d):
+                
                 print('Create folder {}'.format(d))
                 self.create_folder(d)
             else:
@@ -55,8 +56,13 @@ class S3Handler():
         for file_name in files:
             with open(file_name, "rb") as f:
                 print('Uploading file {}'.format(file_name))
+                blob = {}
+                blob['connectionStatus'] = True
+                mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
                 self.s3_client.upload_fileobj(f, "openlens-production", file_name)
-
+                
+                blob['connectionStatus'] = False
+                mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
         print("Finished uploading to S3")
 
 # s3 = S3Handler()

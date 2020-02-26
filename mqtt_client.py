@@ -177,15 +177,15 @@ class MQTTClient():
             blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
-            blob = {}
-            blob['connectionStatus'] = True
-            self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
+            # blob = {}
+            # blob['connectionStatus'] = True
+            # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
             
-            s3_client.upload_file()
+            s3_client.upload_file(self)
 
-            blob = {}
-            blob['connectionStatus'] = False
-            self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
+            # blob = {}
+            # blob['connectionStatus'] = False
+            # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
 
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")

@@ -168,30 +168,30 @@ class VideoGet:
                     blob = json.dumps({'time': str(now), 'region': self.config._configuration_data['location'], 'node': str(rpi_id), 'node_type': self.config._configuration_data['type'], 'log': 'Stop Recording Video'})
                     mqtt.publish_message('/logs/rpi/' + self.config._configuration_data['type'] +  '/' +  self.config._configuration_data['location']+'/' + str(rpi_id), blob)
 
-                    
+            else:        
 
-            if not self.grabbed:
+                if not self.grabbed:
 
-                print('Waiting for a lock in grabbed')
-                self.lock.acquire()
-                try:
-                    self.stop(mqtt)
-                finally:
-                    print('Released a lock in grabbed')
-                    self.lock.release()
-            else:
-                (self.grabbed, self.frame) = self.stream.read()
-                if self.grabbed:
-                    mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
+                    print('Waiting for a lock in grabbed')
+                    self.lock.acquire()
+                    try:
+                        self.stop(mqtt)
+                    finally:
+                        print('Released a lock in grabbed')
+                        self.lock.release()
+                else:
+                    (self.grabbed, self.frame) = self.stream.read()
+                    if self.grabbed:
+                        mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
 
-                    frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
-                    frame_rgb = frame[:896, :]
-                    frame_bgr = cv2.cvtColor(frame[896:, :],  cv2.COLOR_BGR2RGB)
-                    frame = cv2.vconcat([frame_rgb,frame_bgr])
-                    self.out.write(frame)
+                        frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
+                        frame_rgb = frame[:896, :]
+                        frame_bgr = cv2.cvtColor(frame[896:, :],  cv2.COLOR_BGR2RGB)
+                        frame = cv2.vconcat([frame_rgb,frame_bgr])
+                        self.out.write(frame)
 
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            break
 
     def stop(self, mqtt):
         self.is_recording = False

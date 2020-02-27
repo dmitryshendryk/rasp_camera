@@ -5,6 +5,7 @@ import os
 from config import Config
 import json
 
+import datetime
 
 class S3Handler():
 
@@ -81,10 +82,24 @@ class S3Handler():
                 blob = {}
                 blob['connectionStatus'] = True
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
+
+
+                now = datetime.now()
+                date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Cron Upload Started'})
+                mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
+
+
                 self.s3_client.upload_fileobj(f, "openlens-production", file_name)
                 
                 blob['connectionStatus'] = False
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
+
+                now = datetime.now()
+                date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Cron Upload Finished'})
+                mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
+
         print("Finished uploading to S3")
 
 # s3 = S3Handler()

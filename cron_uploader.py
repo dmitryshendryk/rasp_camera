@@ -46,7 +46,7 @@ class CronUploader():
         pass     
 
     def publish_message(self, topic, blob):
-        result, mid = self.mqttc.publish(topic, blob, qos=0, retain=True)
+        result, mid = self.mqttc.publish(topic, blob, qos=1, retain=False)
         return result, mid
 
     def erase_files(self):

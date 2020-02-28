@@ -64,7 +64,7 @@ class VideoGet:
             # self.stopped.clear()
         self.stopped = threading.Event()
         now = datetime.now()
-        now_date = now.strftime("%d_%m_%Y__%H_%M_%S") ### change name  
+        now_date = now.strftime("%d_%m_%Y_%H_%M_%S") ### change name  
         #### <timestamp>_<recordingdate>_<length_in_milliseconds>_<camera_id>_<camera_set_id>_<shop_id>_<compression>_<resolution>.m
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         video_save_path = './' + self.config._configuration_data['location'] + '/' + os.environ['RPI_ID']

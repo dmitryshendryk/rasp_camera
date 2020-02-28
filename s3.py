@@ -92,6 +92,7 @@ class S3Handler():
 
                 self.s3_client.upload_fileobj(f, "openlens-production", file_name)
                 
+                blob = {}
                 blob['connectionStatus'] = False
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
 

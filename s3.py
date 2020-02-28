@@ -5,7 +5,7 @@ import os
 from config import Config
 import json
 
-import datetime
+from datetime import datetime
 
 class S3Handler():
 

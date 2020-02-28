@@ -170,20 +170,20 @@ class MQTTClient():
         s3_client = S3Handler()
         def upload(self, s3_client, mqttc, obj, msg):
             
-            blob = {}
-            blob['connectionStatus'] = True
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            # blob = {}
+            # blob['connectionStatus'] = True
+            # now = datetime.now()
+            # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 
-            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+            # blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
+            # self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
             s3_client.upload_file(self)
 
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
-            self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+            # now = datetime.now()
+            # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            # blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
+            # self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
         
         msg = json.loads(msg.payload)
         if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 

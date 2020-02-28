@@ -75,7 +75,11 @@ class S3Handler():
             else:
                 print("{} is exists".format(d))
 
-
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Manual Upload Started'})
+        mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
+        
         for file_name in files:
             with open(file_name, "rb") as f:
                 print('Uploading file {}'.format(file_name))
@@ -83,23 +87,16 @@ class S3Handler():
                 blob['connectionStatus'] = True
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
 
-
-                now = datetime.now()
-                date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Cron Upload Started'})
-                mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
-
-
                 self.s3_client.upload_fileobj(f, "openlens-production", file_name)
                 
                 blob = {}
                 blob['connectionStatus'] = False
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
 
-                now = datetime.now()
-                date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Cron Upload Finished'})
-                mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'region':mqtt.local_config['location'], 'node': mqtt.rpi_id, 'node_type': mqtt.local_config['type'], 'log': 'Manual Upload Finished'})
+        mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
 
         print("Finished uploading to S3")
 

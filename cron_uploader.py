@@ -58,7 +58,22 @@ class CronUploader():
         
 
     def upload(self):
+
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Upload Started'})
+        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+
         self.s3.upload_file_cron()
+
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Cron Finished Started'})
+        self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
+
+        
+
+
         
 
 

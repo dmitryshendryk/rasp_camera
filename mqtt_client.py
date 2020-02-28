@@ -169,6 +169,7 @@ class MQTTClient():
 
         s3_client = S3Handler()
         def upload(self, s3_client, mqttc, obj, msg):
+            
             blob = {}
             blob['connectionStatus'] = True
             now = datetime.now()
@@ -177,24 +178,18 @@ class MQTTClient():
             blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Start Uploading Videos'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
 
-            # blob = {}
-            # blob['connectionStatus'] = True
-            # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
-            
             s3_client.upload_file(self)
-
-            # blob = {}
-            # blob['connectionStatus'] = False
-            # self.publish_message("/camera/uploading/" + self.local_config['type'] +  '/' + self.local_config['location'] + '/' + self.rpi_id, json.dumps(blob))
 
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
             blob = json.dumps({'time': str(now), 'region':self.local_config['location'], 'node': self.rpi_id, 'node_type': self.local_config['type'], 'log': 'Upload Finished'})
             self.publish_message('/logs/rpi/' + self.local_config['type'] + '/', blob)
         
-        t = threading.Thread(name='child procs', target=upload, args=(self, s3_client, mqttc, obj, msg))
-        t.setDaemon(True)
-        t.start()
+        msg = json.loads(msg.payload)
+        if self.rpi_id == msg['rpi_id']['rpis'] and self.local_config['type'] == msg['type'] and self.local_config['location'] == msg['rpi_id']['region']: 
+            t = threading.Thread(name='child procs', target=upload, args=(self, s3_client, mqttc, obj, msg))
+            t.setDaemon(True)
+            t.start()
 
     def upload_video_to_server(self,mqttc, obj, msg):
         

@@ -20,7 +20,7 @@ class S3Handler():
                        aws_secret_access_key=self.configuration.aws_secret_access_key)
         
     def get_length(self, video_filename):
-        videos_path = ROOT_PATH + '/' + self.configuration._configuration_data['location'] + '/' + str(self.rpi_id)
+        videos_path = ROOT_PATH + '/' 
         video_filename = os.path.join(videos_path, video_filename)
         result = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
                                 "format=duration", "-of",

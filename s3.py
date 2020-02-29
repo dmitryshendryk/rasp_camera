@@ -22,6 +22,7 @@ class S3Handler():
     def get_length(self, video_filename):
         videos_path = ROOT_PATH + '/' 
         video_filename = os.path.join(videos_path, video_filename)
+        print("Get length {}".format(video_filename))
         result = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
                                 "format=duration", "-of",
                                 "default=noprint_wrappers=1:nokey=1", video_filename],

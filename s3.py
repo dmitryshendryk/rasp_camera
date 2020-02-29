@@ -106,14 +106,14 @@ class S3Handler():
             file_name = file_name[:7] + [duration] + file_name[7:]
             file_name = "_".join(file_name) 
             path += [file_name]
-            print("File {} duration is {}".format(file_name, duration))
-            with open(file_name, "rb") as f:
-                print('Uploading file {}'.format(file_name))
+            print("File {} duration is {}".format(path, duration))
+            with open(path, "rb") as f:
+                print('Uploading file {}'.format(path))
                 blob = {}
                 blob['connectionStatus'] = True
                 mqtt.publish_message("/camera/uploading/" + mqtt.local_config['type'] +  '/' + mqtt.local_config['location'] + '/' + mqtt.rpi_id, json.dumps(blob))
 
-                self.s3_client.upload_fileobj(f, "openlens-production", file_name)
+                self.s3_client.upload_fileobj(f, "openlens-production", path)
                 
                 blob = {}
                 blob['connectionStatus'] = False

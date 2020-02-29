@@ -6,16 +6,32 @@ from config import Config
 import json
 
 from datetime import datetime
+import subprocess
+
+
+ROOT_PATH = os.path.abspath('./')
 
 class S3Handler():
 
     def __init__(self):
         self.configuration = Config()
-        self.rpi_id = 'test'
+        self.rpi_id = os.environ['RPI_ID']
         self.s3_client = boto3.client('s3', aws_access_key_id=self.configuration.aws_access_key_id,
                        aws_secret_access_key=self.configuration.aws_secret_access_key)
         
-
+    def get_length(self, video_filename):
+        videos_path = ROOT_PATH + '/' + self.configuration._configuration_data['location'] + '/' + str(self.rpi_id)
+        video_filename = os.path.join(videos_path, video_filename)
+        result = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+                                "format=duration", "-of",
+                                "default=noprint_wrappers=1:nokey=1", video_filename],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
+        try:
+            return float(result.stdout)
+        except ValueError:
+            print(f'cannot extract length from {video_filename} - probably video is dark')
+            return None
 
     def get_files_path(self, path):
 
@@ -81,6 +97,8 @@ class S3Handler():
         mqtt.publish_message('/logs/rpi/' + mqtt.local_config['type'] + '/', blob)
         
         for file_name in files:
+            duration = self.get_length(file_name)
+            print("File {} duration is {}".format(file_name, duration))
             with open(file_name, "rb") as f:
                 print('Uploading file {}'.format(file_name))
                 blob = {}

@@ -12,6 +12,9 @@ import numpy as np
 import time 
 from datetime import datetime
 
+
+import subprocess
+
 rpi_id = os.environ['RPI_ID']
 
 
@@ -86,6 +89,8 @@ class VideoGet:
         return self
 
     
+   
+            
     def get_movement(self):
 
         transient_movement_flag = False
@@ -185,11 +190,11 @@ class VideoGet:
                     if self.grabbed:
                         mqtt.mqttc.publish("/camera/recording/" + self.config._configuration_data['type'] +  '/' + self.config._configuration_data['location'] + '/' + str(rpi_id), blob)
 
-                        frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
-                        frame_rgb = frame[:896, :]
-                        frame_bgr = cv2.cvtColor(frame[896:, :],  cv2.COLOR_BGR2RGB)
-                        frame = cv2.vconcat([frame_rgb,frame_bgr])
-                        self.out.write(frame)
+                        # frame = cv2.cvtColor(self.frame,  cv2.COLOR_BGR2RGB)
+                        # frame_rgb = frame[:896, :]
+                        # frame_bgr = cv2.cvtColor(frame[896:, :],  cv2.COLOR_BGR2RGB)
+                        # frame = cv2.vconcat([frame_rgb,frame_bgr])
+                        self.out.write(self.frame)
 
                         if cv2.waitKey(1) & 0xFF == ord('q'):
                             break

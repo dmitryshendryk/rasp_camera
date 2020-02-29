@@ -106,6 +106,7 @@ class S3Handler():
             file_name = file_name[:7] + [duration] + file_name[7:]
             file_name = "_".join(file_name) 
             path += [file_name]
+            path = "/".join(path)
             print("File {} duration is {}".format(path, duration))
             with open(path, "rb") as f:
                 print('Uploading file {}'.format(path))

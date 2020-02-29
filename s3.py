@@ -99,11 +99,13 @@ class S3Handler():
         
         for file_name in files:
             duration = self.get_length(file_name)
-
-            file_name = file_name.split('_')
+            path = file_name.split('/')
+            file_name = path[-1].split('_')
+            path.pop()
             duration = str(int(duration)) if duration else 'None'
             file_name = file_name[:7] + [duration] + file_name[7:]
             file_name = "_".join(file_name) 
+            path += [file_name]
             print("File {} duration is {}".format(file_name, duration))
             with open(file_name, "rb") as f:
                 print('Uploading file {}'.format(file_name))

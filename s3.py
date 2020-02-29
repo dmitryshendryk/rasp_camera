@@ -107,9 +107,9 @@ class S3Handler():
             file_name = "_".join(file_name) 
             path += [file_name]
             path = "/".join(path)
-            path = os.path.join(ROOT_PATH, path)
+            # path = os.path.join(ROOT_PATH, path)
             print("File {} duration is {}".format(path, duration))
-            with open(path, "rb") as f:
+            with open(file_name, "rb") as f:
                 print('Uploading file {}'.format())
                 blob = {}
                 blob['connectionStatus'] = True

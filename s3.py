@@ -72,8 +72,19 @@ class S3Handler():
 
 
         for file_name in files:
+
+            duration = self.get_length(file_name)
+            path = file_name.split('/')
+            file_name_split = path[-1].split('_')
+            path.pop()
+            duration = str(int(duration)) if duration else 'None'
+            file_name_split = file_name_split[:7] + [duration] + file_name_split[7:]
+            file_name_split = "_".join(file_name_split) 
+            path += [file_name_split]
+            path = "/".join(path)
+
             with open(file_name, "rb") as f:
-                self.s3_client.upload_fileobj(f, "openlens-production", file_name)
+                self.s3_client.upload_fileobj(f, "openlens-production", path)
                 
         print("Finished uploading to S3")
 

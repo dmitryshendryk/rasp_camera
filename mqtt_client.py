@@ -39,8 +39,8 @@ class MQTTClient():
 
         self.mqttc.subscribe("store/prishna/rpi/actions/reboot", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/shutdown", qos=1)
-        self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=1)
-        self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=1)
+        self.mqttc.subscribe("store/prishna/rpi/actions/start_video", qos=2)
+        self.mqttc.subscribe("store/prishna/rpi/actions/stop_video", qos=2)
         self.mqttc.subscribe("store/prishna/rpi/actions/clear_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/upload_videos", qos=1)
         self.mqttc.subscribe("store/prishna/rpi/actions/update/config", qos=1)
@@ -81,7 +81,7 @@ class MQTTClient():
         print(string)
 
     def publish_message(self, topic, blob):
-        result, mid = self.mqttc.publish(topic, blob, qos=1, retain=False)
+        result, mid = self.mqttc.publish(topic, blob, qos=2, retain=False)
         return result, mid
 
 

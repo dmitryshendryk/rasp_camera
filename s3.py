@@ -100,12 +100,12 @@ class S3Handler():
         for file_name in files:
             duration = self.get_length(file_name)
             path = file_name.split('/')
-            file_name = path[-1].split('_')
+            file_name_split = path[-1].split('_')
             path.pop()
             duration = str(int(duration)) if duration else 'None'
-            file_name = file_name[:7] + [duration] + file_name[7:]
-            file_name = "_".join(file_name) 
-            path += [file_name]
+            file_name_split = file_name_split[:7] + [duration] + file_name_split[7:]
+            file_name_split = "_".join(file_name_split) 
+            path += [file_name_split]
             path = "/".join(path)
             # path = os.path.join(ROOT_PATH, path)
             print("File {} duration is {}".format(path, duration))
